@@ -1,8 +1,9 @@
 <script setup lang="ts" generic="T">
-import type { ColumnTableDef } from '@/components/VTable/ColumnTableDef';
-import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { cn, valueUpdater,t } from '@/lib/utils';
-import { ChevronDown, CogIcon } from 'lucide-vue-next';
+import type { ColumnTableConfig } from './ColumnTableRef';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { t } from '@/lib/utils';
+import { cn, valueUpdater } from '@/lib/utils';
+import { ChevronDown, Columns3Cog } from 'lucide-vue-next';
 import {
     ColumnFiltersState,
     ExpandedState,
@@ -16,19 +17,30 @@ import {
     useVueTable,
     VisibilityState,
 } from '@tanstack/vue-table';
-import { ref } from 'vue';
+import { ref,onMounted } from 'vue';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 
 interface Props {
-    columnsDefs: Array<ColumnTableDef<T>>;
+    columnsDefs: Array<ColumnTableConfig<T>>;
     pinning?: {
         left: Array<string>;
         right: Array<string>;
     };
+    visibleFields?: Array<string>;
+    showFieldsVisibility?: boolean;
+    clickRow?: Function
 }
 
-const props = defineProps<Props>();
+const props = withDefaults(defineProps<Props>(), {
+    pinning: () => ({
+        left: [],
+        right: [],
+    }),
+    visibleFields: () => [],
+    showFieldsVisibility: true,
+    clickRow: (row:any) => {},
+});
 const disabledStyle = 'bg-muted  text-muted-foreground border-b dark:border-zinc-700';
 const sorting = ref<SortingState>([]);
 const columnFilters = ref<ColumnFiltersState>([]);
@@ -36,7 +48,6 @@ const columnVisibility = ref<VisibilityState>({});
 const rowSelection = ref({});
 const expanded = ref<ExpandedState>({});
 const model = defineModel();
-
 const table = useVueTable({
     data: model,
     get columns() {
@@ -77,31 +88,33 @@ const table = useVueTable({
 });
 </script>
 <template>
-    <div class="mb-2 flex items-center justify-between px-2" v-if="false">
-        <DropdownMenu>
-            <DropdownMenuTrigger as-child>
-                <Button variant="outline" class="ml-auto ">
-                    <CogIcon class=""/>
-                    <ChevronDown class="ml-2 h-4 w-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-                <DropdownMenuCheckboxItem
-                    v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
-                    :key="column.id"
-                    class="capitalize"
-                    :model-value="column.getIsVisible()"
-                    @update:model-value="
-            (value) => {
-              column.toggleVisibility(!!value);
-            }
-          "
-                >
-                    {{ column.id }}
-                </DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    </div>
+    <slot name="fields_visibility" :table="table">
+        <div class="mb-2 flex items-center justify-between px-2" v-if="showFieldsVisibility">
+            <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                    <Button variant="outline" class="ml-auto">
+                        <Columns3Cog class="" />
+                        <ChevronDown class="ml-2 h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuCheckboxItem
+                        v-for="column in table.getAllColumns().filter((column) => column.getCanHide())"
+                        :key="column.id"
+                        class="capitalize"
+                        :model-value="column.getIsVisible()"
+                        @update:model-value="
+              (value) => {
+                column.toggleVisibility(!!value);
+              }
+            "
+                    >
+                        {{ column.id }}
+                    </DropdownMenuCheckboxItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
+    </slot>
     <Table class="">
         <TableHeader>
             <TableRow v-for="headerGroup in table.getHeaderGroups()" :key="headerGroup.id">
@@ -125,7 +138,12 @@ const table = useVueTable({
         <TableBody>
             <template v-if="table.getRowModel().rows?.length">
                 <template v-for="row in table.getRowModel().rows" :key="row.id">
-                    <TableRow :data-state="row.getIsSelected() && 'selected'">
+                    <TableRow :data-state="row.getIsSelected() && 'selected'" :class="[ row.disabled ? disabledStyle :'']"  @click="(e) =>{
+                 e.stopPropagation();
+                 if(!row.disabled){
+                    clickRow(row);
+                 }
+            } ">
                         <TableCell
                             v-for="cell in row.getVisibleCells()"
                             :key="cell.id"
@@ -145,19 +163,18 @@ const table = useVueTable({
                             <FlexRender :render="cell.column.columnDef.cell" :props="cell.getContext()" />
                         </TableCell>
                     </TableRow>
-                    <TableRow v-if="row.getIsExpanded()"> </TableRow>
+                    <TableRow v-if="row.getIsExpanded()"></TableRow>
                 </template>
             </template>
             <TableRow v-else>
                 <TableCell :colspan="columnsDefs.length" class="h-14 text-center">
-                    {{ t('No items found') }}
+                    {{ t('No items found.') }}
                 </TableCell>
             </TableRow>
             <slot name="footer"></slot>
             <TableRow>
-                <TableCell> </TableCell>
+                <TableCell></TableCell>
             </TableRow>
-
         </TableBody>
     </Table>
 </template>

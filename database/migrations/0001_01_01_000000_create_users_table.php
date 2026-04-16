@@ -32,7 +32,7 @@ return new class extends Migration
         Schema::create('sessions', static function (Blueprint $table) {
             $table->string('id')->primary();
             $table->string('user_id')->nullable();
-            $table->foreign('user_id')->references('email')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
