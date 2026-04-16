@@ -4,24 +4,10 @@ import {t} from "@/lib/utils"
 
 export const AppRoutes: NavItem[]  = [
     {
-        title: t('Profile'),
-        href: route('profile.base-info'),
-        icon: GraduationCap,
-        routeName: 'profile.base-info',
+        title: t('Dashboard'),
+        href: route('dashboard'),
+        icon: LayoutGrid,
+        routeName: 'dashboard',
         adminOnly: false,
-    },
-    {
-        title: t('Members'),
-        href: route('prm-members'),
-        icon: Users,
-        routeName: 'prm-members',
-        adminOnly: true,
-    },
-    {
-        title: t('Mapa de efectividade'),
-        href: route('members.presence-register.list'),
-        icon: ListCheck,
-        routeName: 'members.presence-register.list',
-        adminOnly: true,
     },
 ];

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import logo from "@/images/logo.png"
+import logo from "@/images/logo.avif"
 import moz from "@/images/moz.png"
 import emb from "@/images/moz_emb.png"
 import avatar from "@/images/avatar.jpg"
