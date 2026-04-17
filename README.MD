@@ -1,0 +1,15 @@
+Generate a a task list where i put check on ended tasks and uncheck on pending tasks
+- [ ] Create Patient Case By Authenticated User
+- [ ] Create Patient Case By Doctor who Has In the System.
+- [ ] Make payment of a case by payment M-PESA (NO CASH)
+- [ ] Make LIST of all cases by doctor and patient
+- [ ] Make Show the doctor balance amount received in the system.
+- [ ] List all unassigned cases to doctors.
+- [ ] List all assigned cases of a doctor.
+- [ ] List all cases of a patient.
+- [ ] Make a doctor to accept a case and assign it to himself.
+- [ ] Make a doctor to reject a case and assign it to another doctor.
+- [ ] Make a doctor to complete a case and mark it as completed.
+- [ ] Make a doctor to cancel a case and mark it as cancelled.
+- [ ] Make a doctor to request for more information from the patient and mark it as pending
+- [ ] Make a Doctor to do second review of a case and mark it as second review.

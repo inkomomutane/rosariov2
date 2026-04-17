@@ -49,9 +49,6 @@ watch(
     { immediate: true, deep: true },
 );
 
-
-
-
 const createCrudManager = ref(crudManager<FullPatientCaseDto>());
 const editCrudManager = ref(crudManager<FullPatientCaseDto>());
 const deleteCrudManager = ref(crudManager<FullPatientCaseDto>());
@@ -296,8 +293,6 @@ const columns = [
         meta: { label:  t('Action') },
     }),
 ];
-
-
 </script>
 
 <template>
