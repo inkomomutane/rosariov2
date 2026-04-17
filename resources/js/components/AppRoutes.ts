@@ -17,4 +17,13 @@ export const AppRoutes: NavItem[]  = [
         routeName: 'dashboard.user-person-edit',
         adminOnly: false,
     },
+    {
+        title: t('Parient Cases'),
+        href: route('all-patient-cases'),
+        icon: LayoutGrid,
+        routeName: 'all-patient-cases',
+        adminOnly: false,
+    },
+
+    //
 ];

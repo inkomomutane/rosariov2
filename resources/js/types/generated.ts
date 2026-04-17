@@ -1,3 +1,7 @@
+export type AlertDto = {
+type: AlertStatus;
+message: string;
+};
 export type AlertStatus = 'success' | 'error' | 'info' | 'warning';
 export type CaseType = 'ray_x' | 'ecography' | 'tac' | 'mri' | 'laboratory' | 'other';
 export type ColumnOrderDto = {
@@ -16,14 +20,34 @@ collection_name: string | null;
 disk: string | null;
 };
 export type FormUIMap = 'users' | 'doctors' | 'patients' | 'cases' | 'case_reviews' | 'invoices' | 'payments';
+export type FullPatientCaseDto = {
+case_code: string | null;
+patient_id: string | null;
+patient_name: string | null;
+patient_last_name: string | null;
+patient_verified: boolean | null;
+priority: Urgency | null;
+title: string | null;
+description: string | null;
+case_type: CaseType | null;
+first_review: string | null;
+final_review: string | null;
+case_date: any | string | null;
+first_review_date: any | string | null;
+last_review_date: any | string | null;
+requester_doctor_name: string | null;
+status: PatientCaseStatus | null;
+assigned_doctor_name: string | null;
+last_reviewer_doctor_name: string | null;
+};
 export type InvoiceStatus = 'draft' | 'issued' | 'partially_paid' | 'paid' | 'refunded' | 'overdue' | 'canceled';
 export type MaritalStatus = 'single' | 'married' | 'divorced' | 'widowed';
 export type PatientCaseStatus = 'submitted' | 'awaiting_assignment' | 'assigned' | 'under_review' | 'reviewed' | 'in_secondary_review' | 'secondary_reviewed' | 'closed' | 'reopened' | 'cancelled';
 export type PersonDto = {
 name: string;
 last_name: string;
-gender: Sex;
-marital_status: MaritalStatus;
+gender: Sex | null;
+marital_status: MaritalStatus | null;
 middle_name: string | null;
 birth_date: any | string | null;
 nationality: string | null;

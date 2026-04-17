@@ -3,7 +3,7 @@ import type { ColumnTableConfig } from './ColumnTableRef';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { t } from '@/lib/utils';
 import { cn, valueUpdater } from '@/lib/utils';
-import { ChevronDown, Columns3Cog } from 'lucide-vue-next';
+import { ChevronDown, Cog } from 'lucide-vue-next';
 import {
     ColumnFiltersState,
     ExpandedState,
@@ -17,7 +17,7 @@ import {
     useVueTable,
     VisibilityState,
 } from '@tanstack/vue-table';
-import { ref,onMounted } from 'vue';
+import { ref,onMounted,h } from 'vue';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 
@@ -93,7 +93,7 @@ const table = useVueTable({
             <DropdownMenu>
                 <DropdownMenuTrigger as-child>
                     <Button variant="outline" class="ml-auto">
-                        <Columns3Cog class="" />
+                        <Cog class="" />
                         <ChevronDown class="ml-2 h-4 w-4" />
                     </Button>
                 </DropdownMenuTrigger>

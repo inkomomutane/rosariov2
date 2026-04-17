@@ -26,9 +26,6 @@ Route::get('dashboard/user/person/edit',EditUserPersonDetails::class)->name('das
 Route::post('dashboard/user/person/update',UpdateUserPersonDetails::class)->name('dashboard.user-person-update')->middleware(['auth', 'verified']);
 
 
-
-
-
-
 require __DIR__.'/auth.php';
 require __DIR__.'/settings.php';
+require __DIR__.'/patient_cases.php';
