@@ -16,7 +16,6 @@ import { useSortable } from '@vueuse/integrations/useSortable';
 import { Checkbox } from '@/components/ui/checkbox';
 import { t } from '@/lib/utils';
 
-
 interface Props {
     table: any;
     document_type: FormUIMap;

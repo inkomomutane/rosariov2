@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Enum\MaritalStatus;
+use App\Enum\Sex;
 use Database\Factories\PersonFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Person extends Model
 {
@@ -36,5 +39,22 @@ class Person extends Model
         'cause_of_death',
         'created_by_name',
         'created_by_id',
+        'user_id'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'gender' => Sex::class,
+            'birth_date' => 'date:Y-m-d',
+            'death_date' => 'date:Y-m-d',
+            'marital_status' => MaritalStatus::class
+        ];
+    }
+
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

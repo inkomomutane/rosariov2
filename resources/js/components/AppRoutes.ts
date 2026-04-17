@@ -10,4 +10,11 @@ export const AppRoutes: NavItem[]  = [
         routeName: 'dashboard',
         adminOnly: false,
     },
+    {
+        title: t('Details'),
+        href: route('dashboard.user-person-edit'),
+        icon: LayoutGrid,
+        routeName: 'dashboard.user-person-edit',
+        adminOnly: false,
+    },
 ];

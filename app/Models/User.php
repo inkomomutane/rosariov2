@@ -5,8 +5,6 @@ namespace App\Models;
 use App\Data\UserDto;
 use App\Enum\MaritalStatus;
 use App\Enum\Sex;
-use App\Observers\NIPGenerator;
-use App\Observers\PasswordFiller;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -15,6 +13,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\LaravelData\WithData;
@@ -45,7 +44,6 @@ class User extends Authenticatable implements HasMedia
     public string $dataClass = UserDto::class;
 
 
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -72,5 +70,11 @@ class User extends Authenticatable implements HasMedia
     public function invoices(): HasMany
     {
         return $this->hasMany(Invoice::class, 'user_id');
+    }
+
+
+    public function person(): HasOne
+    {
+        return $this->hasOne(Person::class, 'user_id');
     }
 }

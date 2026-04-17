@@ -1,6 +1,10 @@
 <?php
 
 
+use App\Http\Controllers\FormUI\GetUiFieldsController;
+use App\Http\Controllers\FormUI\UpdateFormUIController;
+use App\Http\Controllers\UserPersonInfo\EditUserPersonDetails;
+use App\Http\Controllers\UserPersonInfo\UpdateUserPersonDetails;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -11,6 +15,17 @@ Route::get('/', function () {
 Route::get('dashboard', function () {
      return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::get('/ui-fields/{type}', GetUiFieldsController::class)->name('ui-fields')->middleware(['auth', 'verified']);
+Route::post('/ui-fields-update/{type}', UpdateFormUIController::class)->name('ui-fields-update')->middleware(['auth', 'verified']);
+
+# Person.
+
+Route::get('dashboard/user/person/edit',EditUserPersonDetails::class)->name('dashboard.user-person-edit')->middleware(['auth', 'verified']);
+Route::post('dashboard/user/person/update',UpdateUserPersonDetails::class)->name('dashboard.user-person-update')->middleware(['auth', 'verified']);
+
+
 
 
 
