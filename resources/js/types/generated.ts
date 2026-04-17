@@ -39,9 +39,25 @@ requester_doctor_name: string | null;
 status: PatientCaseStatus | null;
 assigned_doctor_name: string | null;
 last_reviewer_doctor_name: string | null;
+id: string | null;
 };
 export type InvoiceStatus = 'draft' | 'issued' | 'partially_paid' | 'paid' | 'refunded' | 'overdue' | 'canceled';
+export type KeyValueDto = {
+key: string;
+value: string;
+};
 export type MaritalStatus = 'single' | 'married' | 'divorced' | 'widowed';
+export type PatientCaseRequestDto = {
+priority: Urgency;
+title: string;
+description: string;
+status: PatientCaseStatus | null;
+case_type: CaseType | null;
+attachments: Array<any> | null;
+uploaded_attachments: Array<any> | null;
+id: string | null;
+case_code: string | null;
+};
 export type PatientCaseStatus = 'submitted' | 'awaiting_assignment' | 'assigned' | 'under_review' | 'reviewed' | 'in_secondary_review' | 'secondary_reviewed' | 'closed' | 'reopened' | 'cancelled';
 export type PersonDto = {
 name: string;

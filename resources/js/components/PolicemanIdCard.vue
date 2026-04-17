@@ -178,7 +178,7 @@ const updateLogo = () => {
                 <svg width="400" height="100" class="absolute top-[7px] left-[212px] font-rubik me-1">
                     <text fill="white" fill-opacity="0.1" font-size="80" x="200" y="70" text-anchor="middle"
                           stroke="#e3c5a0" stroke-opacity="0.1" class="me-1">
-                        PRM
+                        MRS
                     </text>
                 </svg>
 

@@ -18,12 +18,17 @@ export const AppRoutes: NavItem[]  = [
         adminOnly: false,
     },
     {
-        title: t('Parient Cases'),
+        title: t('Patient Cases'),
         href: route('all-patient-cases'),
         icon: LayoutGrid,
         routeName: 'all-patient-cases',
         adminOnly: false,
     },
-
-    //
+    {
+        title: t('My Cases'),
+        href: route('my-cases'),
+        icon: LayoutGrid,
+        routeName: 'my-cases',
+        adminOnly: false,
+    }
 ];

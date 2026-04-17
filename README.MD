@@ -13,3 +13,4 @@ Generate a a task list where i put check on ended tasks and uncheck on pending t
 - [ ] Make a doctor to cancel a case and mark it as cancelled.
 - [ ] Make a doctor to request for more information from the patient and mark it as pending
 - [ ] Make a Doctor to do second review of a case and mark it as second review.
+- [x] Done Tasks

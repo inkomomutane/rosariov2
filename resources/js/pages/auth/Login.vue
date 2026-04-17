@@ -28,7 +28,7 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase :title="$t('PRM portal')" :description="$t('Enter your credentials to access')">
+    <AuthBase :title="$t('HRM portal')" :description="$t('Enter your credentials to access')">
         <Head :title="$t('Log In')" />
 
         <div v-if="status" class="mb-4 text-center text-sm font-medium text-green-600">

@@ -13,6 +13,6 @@ defineProps<Props>();
         <AppLogoIcon class="size-8 fill-current text-white dark:text-black" />
     </div>
     <div class="ml-1 grid flex-1 text-left text-xs">
-        <span class="mb-0.5 truncate font-semibold leading-none">PRM</span>
+        <span class="mb-0.5 truncate font-semibold leading-none">HMRS</span>
     </div>
 </template>

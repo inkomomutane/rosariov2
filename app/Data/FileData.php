@@ -27,7 +27,7 @@ class FileData extends Data
             name: $media->name,
             size: $media->size,
             type: $media->mime_type,
-            url: $media->getUrl(Carbon::now()->addMinutes(5)),
+            url: $media->getUrl(),
             id: $media->id,
             uuid: $media->uuid,
             collection_name: $media->collection_name,

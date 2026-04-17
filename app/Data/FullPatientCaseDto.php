@@ -7,6 +7,7 @@ use App\Enum\PatientCaseStatus;
 use App\Enum\Urgency;
 use App\Models\PatientCase;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Attributes\Validation\Date;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\WithCast;
@@ -53,6 +54,8 @@ class FullPatientCaseDto extends Data
         public ?PatientCaseStatus $status,
         public ?string            $assigned_doctor_name,
         public ?string            $last_reviewer_doctor_name,
+        public ?string            $id = null,
+        public Collection|array|null              $attachments = [],
 
 
 
@@ -85,6 +88,8 @@ class FullPatientCaseDto extends Data
             status: $case->status,
             assigned_doctor_name: $case->assignedDoctor?->person?->name . ' ' . $case->assignedDoctor?->person?->last_name,
             last_reviewer_doctor_name: $case->lastReviewerDoctor?->person?->name . ' ' . $case->lastReviewerDoctor?->person?->last_name,
+            id: $case->id,
+            attachments:  $case->uploaded_attachments
         );
     }
 }

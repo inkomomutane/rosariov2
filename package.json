@@ -20,12 +20,14 @@
         "prettier-plugin-organize-imports": "^4.1.0",
         "prettier-plugin-tailwindcss": "^0.6.11",
         "typescript-eslint": "^8.23.0",
+        "vite-plugin-vue-devtools": "^8.1.1",
         "vue-tsc": "^2.2.4"
     },
     "dependencies": {
         "@headlessui/vue": "^1.7.23",
         "@iconify/vue": "^5.0.0",
         "@inertiajs/vue3": "^2.0.0",
+        "@internationalized/date": "^3.12.1",
         "@tailwindcss/vite": "^4.1.11",
         "@tanstack/vue-table": "^8.21.3",
         "@vee-validate/zod": "^4.15.1",
@@ -40,7 +42,7 @@
         "laravel-vite-plugin": "^2.0.0",
         "lucide-vue-next": "^0.468.0",
         "qrcode": "^1.5.4",
-        "reka-ui": "^2.4.1",
+        "reka-ui": "^2.9.6",
         "sortablejs": "^1.15.7",
         "tailwind-animate": "^0.2.10",
         "tailwind-merge": "^3.3.1",
