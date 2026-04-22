@@ -13,7 +13,11 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('dashboard', function () {
-     return Inertia::render('Dashboard');
+     return Inertia::render('Dashboard',[
+         'cases' => Inertia::scroll(fn() => \App\Data\FullPatientCaseDto::collect( \App\Models\PatientCase::with(
+             ['patient.person','requesterDoctor.person','assignedDoctor.person','lastReviewerDoctor.person']
+         )->paginate(15)))
+     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
