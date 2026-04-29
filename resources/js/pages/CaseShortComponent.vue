@@ -1,114 +1,149 @@
 <script setup lang="ts">
-import { ref, h } from 'vue'
+import { computed, PropType } from 'vue'
 import { Badge } from '@/components/ui/badge';
-import { MessageSquare ,Bookmark  } from 'lucide-vue-next'
+import {
+    MessageSquare,
+    Bookmark,
+    MoreVertical,
+    CheckCircle2,
+    Paperclip
+} from 'lucide-vue-next'
 
-const dark = ref(false)
+// Define the prop as an object with the medicalCase key
+const props = defineProps({
+    medicalCase: {
+        type: Object as PropType<FullPatientCaseDto>,
+        required: true
+    }
+})
 
-const post = {
-    paragraphs: [
-         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. #Ecography Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-         "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. #Ultrasound Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-         "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. #Radiology",
-    ],
+// Helper to format date
+const formattedDate = computed(() => {
+    if (!props.medicalCase.case_date) return 'No date set'
+    return new Date(props.medicalCase.case_date).toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+    })
+})
+
+// Extract initials for the avatar
+const initials = computed(() => {
+    const first = props.medicalCase.patient_name?.[0] || ''
+    const last = props.medicalCase.patient_last_name?.[0] || ''
+    return (first + last).toUpperCase() || '??'
+})
+
+// Highlight hashtags in description
+function renderDescription(text: string | null): string {
+    if (!text) return ''
+    return text.replace(/#(\w+)/g, '<span class="text-blue-500 dark:text-blue-400 cursor-pointer hover:underline font-medium">#$1</span>')
 }
 
-
-function renderParagraph(text: string): string {
-    return text.replace(/#(\w+)/g, '<span class="text-blue-500 dark:text-blue-400 cursor-pointer hover:underline">#$1</span>')
-}
-
+// Map urgency to colors
+const urgencyStyles = computed(() => {
+    const priority = props.medicalCase.priority?.toLowerCase()
+    if (priority === 'urgent') return 'text-red-500 bg-red-50 dark:bg-red-500/10'
+    if (priority === 'high') return 'text-orange-500 bg-orange-50 dark:bg-orange-500/10'
+    return 'text-zinc-500 bg-zinc-100 dark:bg-zinc-800'
+})
 
 const actions = [
-    { label: 'Review', icon: MessageSquare  },
-    { label: 'Save', icon: Bookmark  },
+    { label: 'Review', icon: MessageSquare },
+    { label: 'Save', icon: Bookmark },
 ]
 </script>
 
 <template>
-    <div class=" dark:bg-zinc-950 flex items-center justify-center  transition-colors duration-300">
-
-
-        <div class="w-full max-w-2xl px-6">
-            <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800  overflow-hidden">
+    <div class="dark:bg-zinc-950 flex items-center justify-center transition-colors duration-300 p-4">
+        <div class="w-full max-w-2xl">
+            <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm">
 
                 <!-- Header -->
                 <div class="flex items-start justify-between px-4 pt-4 pb-3">
                     <div class="flex items-center gap-3">
-                        <div class="w-11 h-11 rounded-full bg-zinc-700 overflow-hidden shrink-0 flex items-center justify-center text-white font-medium text-sm">
-                            NM
+                        <!-- Patient Avatar -->
+                        <div class="w-11 h-11 rounded-full bg-zinc-800 border border-zinc-700 shrink-0 flex items-center justify-center text-white font-semibold text-sm">
+                            {{ initials }}
                         </div>
+
                         <div>
-                            <div class="flex items-center gap-1 flex-wrap">
+                            <div class="flex items-center gap-1.5 flex-wrap">
                                 <span class="text-sm font-semibold text-zinc-900 dark:text-zinc-100 leading-tight">
-                                   Nadia Solis
+                                   {{ medicalCase.patient_name }} {{ medicalCase.patient_last_name }}
                                 </span>
-                                <svg class="w-3.5 h-3.5 text-blue-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
+                                <CheckCircle2 v-if="medicalCase.patient_verified" class="w-3.5 h-3.5 text-blue-500" />
                                 <span class="text-xs text-zinc-400 dark:text-zinc-500">•</span>
-                            </div>
-                            <div class="flex items-center gap-1 flex-wrap">
-                                <p class="text-xs text-red-500 dark:text-zinc-400 leading-tight">
-                                    Urgent
-                                </p>
-                                 <span class="text-xs p-0.5" variant="outline" size="sm">
-                                     Ecography
-                                 </span>
+                                <span class="text-xs font-mono text-zinc-400 uppercase">{{ medicalCase.case_code }}</span>
                             </div>
 
-                            <div class="flex items-center gap-1 mt-0.5">
-                                <span class="text-xs text-zinc-400 dark:text-zinc-500">
-                                    2h ago
+                            <div class="flex items-center gap-2 mt-1">
+                                <span :class="['text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider', urgencyStyles]">
+                                    {{ medicalCase.priority || 'Routine' }}
+                                </span>
+                                <span class="text-[10px] text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-1.5 py-0.5 rounded uppercase font-medium">
+                                    {{ medicalCase.case_type }}
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <button class="text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 p-1 -mr-1 rounded transition-colors">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-                        </svg>
+
+                    <button class="text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 p-1.5 rounded-lg transition-colors">
+                        <MoreVertical class="w-4 h-4" />
                     </button>
                 </div>
 
                 <!-- Post Body -->
-                <div class="px-4 pb-3 space-y-2">
+                <div class="px-4 pb-4">
+                    <div class="flex items-center justify-between mb-1">
+                        <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                            {{ medicalCase.title }}
+                        </h3>
+                        <span class="text-[11px] text-zinc-400">{{ formattedDate }}</span>
+                    </div>
                     <p
-                        v-for="(para, i) in post.paragraphs"
-                        :key="i"
-                        class="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed"
-                        v-html="renderParagraph(para)"
+                        class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-wrap"
+                        v-html="renderDescription(medicalCase.description)"
                     />
                 </div>
 
-                <!-- Reactions summary -->
-                <div class="flex items-center justify-between px-4 pb-2.5">
-                    <div class="flex items-center gap-1.5">
-
-                        <span class="text-xs text-zinc-500 dark:text-zinc-400">10 Reviews</span>
+                <!-- Medical Personnel Info -->
+                <div class="flex items-center gap-6 px-4 pb-4 border-b border-zinc-50 dark:border-zinc-800/50">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase text-zinc-400 font-bold tracking-tight">Assigned Doctor</span>
+                        <span class="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                            {{ medicalCase.assigned_doctor_name || 'TBD' }}
+                        </span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase text-zinc-400 font-bold tracking-tight">Requester</span>
+                        <span class="text-xs text-zinc-500">{{ medicalCase.requester_doctor_name }}</span>
                     </div>
                 </div>
 
-                <!-- Divider -->
-                <div class="border-t border-zinc-100 dark:border-zinc-800 mx-4" />
+                <!-- Status & Files -->
+                <div class="px-4 py-3 flex items-center justify-between bg-zinc-50/30 dark:bg-zinc-800/20">
+                    <div class="flex items-center gap-3">
+                        <Badge variant="secondary" class="capitalize text-[11px] px-2 py-0">
+                            {{ medicalCase.status?.toLowerCase().replace('_', ' ') || 'Pending' }}
+                        </Badge>
+                        <div v-if="medicalCase.attachments?.length" class="flex items-center gap-1 text-zinc-400">
+                            <Paperclip class="w-3 h-3" />
+                            <span class="text-[11px] font-medium">{{ medicalCase.attachments.length }}</span>
+                        </div>
+                    </div>
 
-                <!-- Reactions section -->
-                <div class="px-4 py-2.5">
-                    <p class="text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-2">Status</p>
-                     <Badge variant="outline">
-                          {{ 'Submitted'}}
-                     </Badge>
+                    <div v-if="medicalCase.last_reviewer_doctor_name" class="text-right">
+                        <span class="text-[10px] text-zinc-400 block italic">Last reviewed by {{ medicalCase.last_reviewer_doctor_name }}</span>
+                    </div>
                 </div>
 
-                <!-- Divider -->
-                <div class="border-t border-zinc-100 dark:border-zinc-800 mx-4" />
-
                 <!-- Action Bar -->
-                <div class="flex items-center px-2 py-1">
+                <div class="flex items-center px-2 py-1 border-t border-zinc-100 dark:border-zinc-800">
                     <button
                         v-for="action in actions"
                         :key="action.label"
-                        class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-medium text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                        class="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
                     >
                         <component :is="action.icon" class="w-4 h-4" />
                         {{ action.label }}
@@ -118,5 +153,4 @@ const actions = [
             </div>
         </div>
     </div>
-
 </template>

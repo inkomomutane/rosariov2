@@ -16,7 +16,7 @@ use App\Http\Controllers\Cases\CancelCaseController;
 use App\Http\Controllers\Cases\RequestMoreInfoController;
 use App\Http\Controllers\Cases\SecondReviewController;
 use App\Http\Controllers\Payments\MakePaymentController;
-use App\Http\Controllers\Payments\DoctorBalanceController;
+use App\Http\Controllers\Payments\UserBalanceController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -43,5 +43,5 @@ Route::post('/dashboard/cases/{case}/second-review', SecondReviewController::cla
 
 // Payments
 Route::post('/dashboard/invoices/{invoice}/payment', MakePaymentController::class)->name('invoice-payment')->middleware(['auth', 'verified']);
-Route::get('/dashboard/doctor-balance', DoctorBalanceController::class)->name('doctor-balance')->middleware(['auth', 'verified']);
+Route::get('/dashboard/balance', UserBalanceController::class)->name('balance')->middleware(['auth', 'verified']);
 

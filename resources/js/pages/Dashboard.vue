@@ -44,15 +44,16 @@ const breadcrumbs = [
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="min-h-screen  pt-4 px-2 md:px-4">
             <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-5">
-                <AsideDashboard />
+                <AsideDashboard :user="user" />
                 <main class="col-span-1 md:col-span-6 space-y-4">
-                    {{ user }}
-
-                    <CaseShortComponent />
+                    <InfiniteScroll data="cases">
+                        <div v-for="medicalCase in cases.data" :key="medicalCase.id">
+                                <CaseShortComponent :medical-case="medicalCase"  />
+                        </div>
+                    </InfiniteScroll>
                 </main>
                 <aside class="hidden md:block md:col-span-3 space-y-3">
                 </aside>
-
             </div>
         </div>
     </AppLayout>

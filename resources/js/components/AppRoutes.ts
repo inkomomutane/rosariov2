@@ -47,9 +47,9 @@ export const AppRoutes: NavItem[]  = [
     },
     {
         title: t('Doctor Balance'),
-        href: route('doctor-balance'),
+        href: route('balance'),
         icon: DollarSign,
-        routeName: 'doctor-balance',
+        routeName: 'balance',
         adminOnly: false,
     }
 ];

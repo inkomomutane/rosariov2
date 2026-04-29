@@ -34,8 +34,8 @@ const form = useForm<PatientCaseRequestDto>({
     description: '',
     status: null,
     case_type: null,
-    attachments: null,
-    uploaded_attachments: null
+    attachments: [],
+    uploaded_attachments: []
 })
 
 
