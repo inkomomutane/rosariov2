@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('patient_cases', static function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->string('case_code');
-            $table->string('patient_id');
+            $table->string('person_id');
             $table->string('priority')->default(Urgency::NORMAL);
             $table->string('title',500)->nullable();
             $table->text('description')->nullable();
@@ -34,10 +34,10 @@ return new class extends Migration
             $table->string('status')->default(PatientCaseStatus::SUBMITTED);
             $table->timestamps();
 
-            $table->foreign('patient_id')->references('id')->on('patients')->cascadeOnDelete();
-            $table->foreign('requester_doctor_id')->references('id')->on('doctors')->nullOnDelete();
-            $table->foreign('assigned_doctor_id')->references('id')->on('doctors')->nullOnDelete();
-            $table->foreign('last_reviewer_doctor_id')->references('id')->on('doctors')->nullOnDelete();
+            $table->foreign('person_id')->references('id')->on('people')->cascadeOnDelete();
+            $table->foreign('requester_doctor_id')->references('id')->on('people')->nullOnDelete();
+            $table->foreign('assigned_doctor_id')->references('id')->on('people')->nullOnDelete();
+            $table->foreign('last_reviewer_doctor_id')->references('id')->on('people')->nullOnDelete();
         });
     }
 

@@ -22,8 +22,13 @@ import { Separator } from '@/components/ui/separator'
 import { Image, Video, FileText, MoreHorizontal, ThumbsUp, MessageSquare, Share2, Send } from 'lucide-vue-next'
 import AsideDashboard from '@/pages/AsideDashboard.vue';
 import CaseShortComponent from '@/pages/CaseShortComponent.vue';
+
 const props = defineProps({
     cases: Object,
+    userType: String,
+    doctorStats: Object,
+    patientStats: Object,
+    user : Object,
 });
 
 const breadcrumbs = [
@@ -41,6 +46,8 @@ const breadcrumbs = [
             <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-5">
                 <AsideDashboard />
                 <main class="col-span-1 md:col-span-6 space-y-4">
+                    {{ user }}
+
                     <CaseShortComponent />
                 </main>
                 <aside class="hidden md:block md:col-span-3 space-y-3">
@@ -50,4 +57,3 @@ const breadcrumbs = [
         </div>
     </AppLayout>
 </template>
-

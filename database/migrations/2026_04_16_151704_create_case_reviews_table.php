@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('status')->default(ReviewStatus::PENDING);
             $table->timestamps();
             $table->foreign('case_id')->references('id')->on('patient_cases')->cascadeOnDelete();
-            $table->foreign('reviewer_doctor_id')->references('id')->on('doctors')->nullOnDelete();
+            $table->foreign('reviewer_doctor_id')->references('id')->on('people')->nullOnDelete();
         });
     }
 

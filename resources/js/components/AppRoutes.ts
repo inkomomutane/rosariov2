@@ -1,5 +1,5 @@
 import type { NavItem } from '@/types';
-import { GraduationCap, LayoutGrid, Users,ListCheck,ListChecks } from 'lucide-vue-next';
+import { GraduationCap, LayoutGrid, Users,ListCheck,ListChecks, FileText, DollarSign, CheckSquare } from 'lucide-vue-next';
 import {t} from "@/lib/utils"
 
 export const AppRoutes: NavItem[]  = [
@@ -20,15 +20,36 @@ export const AppRoutes: NavItem[]  = [
     {
         title: t('Patient Cases'),
         href: route('all-patient-cases'),
-        icon: LayoutGrid,
+        icon: FileText,
         routeName: 'all-patient-cases',
         adminOnly: false,
     },
     {
         title: t('My Cases'),
         href: route('my-cases'),
-        icon: LayoutGrid,
+        icon: ListCheck,
         routeName: 'my-cases',
+        adminOnly: false,
+    },
+    {
+        title: t('Assigned Cases'),
+        href: route('assigned-cases'),
+        icon: CheckSquare,
+        routeName: 'assigned-cases',
+        adminOnly: false,
+    },
+    {
+        title: t('Unassigned Cases'),
+        href: route('unassigned-cases'),
+        icon: FileText,
+        routeName: 'unassigned-cases',
+        adminOnly: false,
+    },
+    {
+        title: t('Doctor Balance'),
+        href: route('doctor-balance'),
+        icon: DollarSign,
+        routeName: 'doctor-balance',
         adminOnly: false,
     }
 ];

@@ -22,7 +22,7 @@ disk: string | null;
 export type FormUIMap = 'users' | 'doctors' | 'patients' | 'cases' | 'case_reviews' | 'invoices' | 'payments';
 export type FullPatientCaseDto = {
 case_code: string | null;
-patient_id: string | null;
+person_id: string | null;
 patient_name: string | null;
 patient_last_name: string | null;
 patient_verified: boolean | null;

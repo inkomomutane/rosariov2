@@ -18,7 +18,7 @@ class ListAllPatientCases
 
     public function handle(?string $term = '',?int $per_page = 12) {
           return FullPatientCaseDto::collect( PatientCase::query()
-              ->with(['patient.person', 'requesterDoctor.person', 'assignedDoctor.person', 'lastReviewerDoctor.person'])
+              ->with(['patient', 'requesterDoctor', 'assignedDoctor', 'lastReviewerDoctor'])
               ->when($term, function ($query, $term) {
                   $query->whereAny([
                       'case_code',
@@ -30,16 +30,16 @@ class ListAllPatientCases
                       'final_review',
                       'status',
                   ],'ilike', "%$term%")
-                      ->orWhereHas('patient.person', function ($query) use ($term) {
+                      ->orWhereHas('patient', function ($query) use ($term) {
                           $query->whereAny(['name', 'last_name',],'ilike', "%$term%");
                       })
-                      ->orWhereHas('requesterDoctor.person', function ($query) use ($term) {
+                      ->orWhereHas('requesterDoctor', function ($query) use ($term) {
                           $query->whereAny(['name', 'last_name'],'ilike', "%$term%");
                       })
-                      ->orWhereHas('assignedDoctor.person', function ($query) use ($term) {
+                      ->orWhereHas('assignedDoctor', function ($query) use ($term) {
                           $query->whereAny(['name', 'last_name'],'ilike', "%$term%");
                       })
-                      ->orWhereHas('lastReviewerDoctor.person', function ($query) use ($term) {
+                      ->orWhereHas('lastReviewerDoctor', function ($query) use ($term) {
                           $query->whereAny(['name', 'last_name'],'ilike', "%$term%");
                       });
               })

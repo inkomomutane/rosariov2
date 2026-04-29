@@ -25,7 +25,7 @@ class FullPatientCaseDto extends Data
 
     public function __construct(
         public ?string            $case_code,
-        public ?string            $patient_id,
+        public ?string            $person_id,
         public ?string            $patient_name,
         public ?string            $patient_last_name,
         public ?bool              $patient_verified,
@@ -67,13 +67,13 @@ class FullPatientCaseDto extends Data
     public static function  fromModel(PatientCase $case): self
     {
 
-        $case->loadMissing(['patient.person','requesterDoctor.person','assignedDoctor.person','lastReviewerDoctor.person']);
+        $case->loadMissing(['patient','requesterDoctor','assignedDoctor','lastReviewerDoctor']);
 
         return new self(
             case_code: $case->case_code,
-            patient_id: $case->patient_id,
-            patient_name: $case->patient?->person?->name,
-            patient_last_name: $case->patient?->person?->last_name,
+            person_id: $case->person_id,
+            patient_name: $case->patient?->name,
+            patient_last_name: $case->patient?->last_name,
             patient_verified: $case->patient?->verified,
             priority: $case->priority,
             title: $case->title,
@@ -84,10 +84,10 @@ class FullPatientCaseDto extends Data
             case_date: $case->case_date,
             first_review_date: $case->first_review_date,
             last_review_date: $case->last_review_date,
-            requester_doctor_name: $case->requesterDoctor?->person?->name . ' ' . $case->requesterDoctor?->person?->last_name,
+            requester_doctor_name: $case->requesterDoctor?->name . ' ' . $case->requesterDoctor?->last_name,
             status: $case->status,
-            assigned_doctor_name: $case->assignedDoctor?->person?->name . ' ' . $case->assignedDoctor?->person?->last_name,
-            last_reviewer_doctor_name: $case->lastReviewerDoctor?->person?->name . ' ' . $case->lastReviewerDoctor?->person?->last_name,
+            assigned_doctor_name: $case->assignedDoctor?->name . ' ' . $case->assignedDoctor?->last_name,
+            last_reviewer_doctor_name: $case->lastReviewerDoctor?->name . ' ' . $case->lastReviewerDoctor?->last_name,
             id: $case->id,
             attachments:  $case->uploaded_attachments
         );

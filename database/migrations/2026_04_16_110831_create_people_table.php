@@ -45,9 +45,30 @@ return new class extends Migration
 
             $table->string('created_by_id')->nullable();
             $table->string('user_id')->nullable();
+            $table->date('registration_date')->nullable();
 
+            $table->boolean('is_doctor')->default(false);
+            $table->boolean('is_patient')->default(false);
+
+            // Doctor Info
+            $table->boolean('verified')->default(false);
+            $table->date('verified_date')->nullable();
+            $table->string('verified_using')->nullable()->comment('e.g., ID card, passport');
+            $table->string('verification_code')->nullable();
+            $table->string('verification_document')->nullable();
+
+            $table->string('hospital')->nullable();
+            $table->string('specialization')->nullable();
+            $table->string('license_number')->nullable();
+            $table->date('license_issue_date')->nullable();
+            $table->date('license_expiry_date')->nullable();
+
+            $table->unsignedInteger('years_of_experience')->nullable();
+            $table->string('medical_school')->nullable();
+            $table->date('graduation_date')->nullable();
+
+            // Patient Info
             $table->timestamps();
-
             $table->foreign('created_by_id')->references('id')->on('users')->cascadeOnUpdate()->nullOnDelete();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate()->nullOnDelete();
         });

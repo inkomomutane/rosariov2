@@ -28,7 +28,7 @@ class PersonDto extends Data
         #[WithCast(EnumCast::class,type: MaritalStatus::class)]
         public ?MaritalStatus $marital_status,
         public ?string $middle_name,
-         #[Date,Nullable]
+        #[Date,Nullable]
         #[WithCast(DateTimeInterfaceCast::class)]
         #[WithTransformer(DateTimeInterfaceTransformer::class)]
         public Carbon|string|null $birth_date,

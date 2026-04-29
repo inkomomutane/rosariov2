@@ -23,16 +23,9 @@ class StoreMyCase
              'last_name' => ''
          ]);
 
-         $patient = $person->patient()->firstOrCreate([
-             'person_id' => $person->id
-         ], [
-             'person_id' => $person->id,
-             'registration_date' => now(),
-         ]);
-
-        $case =  $patient->cases()->create([
+        $case = $person->cases()->create([
              'case_code' => 'CASE-' . \Str::ulid(),
-             'patient_id' => $patient->id,
+             'person_id' => $person->id,
              'priority' => $dto->priority,
              'title' => $dto->title,
              'description' => $dto->description,

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -25,7 +26,7 @@ class PatientCase extends Model implements HasMedia,WithFilesInterface
 
     protected $fillable = [
         'case_code',
-        'patient_id',
+        'person_id',
         'priority',
         'title',
         'description',
@@ -57,23 +58,28 @@ class PatientCase extends Model implements HasMedia,WithFilesInterface
 
     public function patient(): BelongsTo
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(Person::class,'person_id','id');
     }
 
     public function requesterDoctor(): BelongsTo
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(Person::class, 'requester_doctor_id', 'id');
     }
 
 
     public function assignedDoctor(): BelongsTo
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(Person::class, 'assigned_doctor_id', 'id');
     }
 
     public function lastReviewerDoctor(): BelongsTo
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(Person::class, 'last_reviewer_doctor_id', 'id');
+    }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(CaseReview::class, 'case_id');
     }
 
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\FormUI\GetUiFieldsController;
 use App\Http\Controllers\FormUI\UpdateFormUIController;
 use App\Http\Controllers\UserPersonInfo\EditUserPersonDetails;
 use App\Http\Controllers\UserPersonInfo\UpdateUserPersonDetails;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -12,13 +13,7 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::get('dashboard', function () {
-     return Inertia::render('Dashboard',[
-         'cases' => Inertia::scroll(fn() => \App\Data\FullPatientCaseDto::collect( \App\Models\PatientCase::with(
-             ['patient.person','requesterDoctor.person','assignedDoctor.person','lastReviewerDoctor.person']
-         )->paginate(15)))
-     ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('dashboard', DashboardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
 
 Route::get('/ui-fields/{type}', GetUiFieldsController::class)->name('ui-fields')->middleware(['auth', 'verified']);

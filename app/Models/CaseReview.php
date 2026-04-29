@@ -40,11 +40,11 @@ class CaseReview extends Model implements  WithFilesInterface,HasMedia
 
     public function case(): BelongsTo
     {
-        return $this->belongsTo(PatientCase::class);
+        return $this->belongsTo(PatientCase::class, 'case_id', 'id');
     }
 
     public function doctor(): BelongsTo
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(Person::class,'reviewer_doctor_id','id');
     }
 }
