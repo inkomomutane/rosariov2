@@ -3,14 +3,17 @@ import { cn } from '@/lib/utils';
 </script>
 <template>
     <div class="relative">
-        <div class="">
-            <slot name="tabs" />
-        </div>
+
         <div class="pb-4">
             <div class="">
+                <div class="">
+                    <slot name="tabs" />
+                </div>
                 <div :class="cn('mt-6 border border-zinc-200 bg-white shadow-inner dark:border-zinc-700 dark:bg-zinc-950', $attrs.class,' overflow-hidden')">
-                    <slot name="status-ribbon">
+
+                   <slot name="status-ribbon">
                     </slot>
+
                     <div class="grid gap-3 p-8 lg:grid-cols-2">
                         <!-- header -->
                         <div class="flex gap-3 lg:justify-start">

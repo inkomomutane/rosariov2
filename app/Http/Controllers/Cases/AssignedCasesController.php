@@ -18,7 +18,7 @@ class AssignedCasesController
 
     public function handle(?string $term = '', ?int $per_page = 12)
     {
-        $doctor = auth()->user()->person?->doctor;
+        $doctor = auth()->user()->person;
 
         if (!$doctor) {
             return collect([]);

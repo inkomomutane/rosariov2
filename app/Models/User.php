@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Data\UserDto;
 use App\Enum\MaritalStatus;
+use App\Enum\PaymentType;
 use App\Enum\Sex;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
@@ -22,6 +23,9 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
+use Tpetry\QueryExpressions\Function\Conditional\Coalesce;
+use Tpetry\QueryExpressions\Operator\Arithmetic\Subtract;
+use Tpetry\QueryExpressions\Value\Value;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -44,6 +48,12 @@ class User extends Authenticatable implements HasMedia
 
     public string $dataClass = UserDto::class;
 
+
+    protected $appends = [
+        'balance',
+        'pending_amount',
+        'withdraw_amount',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -78,5 +88,40 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasOne(Person::class, 'user_id');
     }
+
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'user_id');
+    }
+
+    public function getBalanceAttribute(): string
+    {
+        $expression = new Subtract(
+            new Coalesce(['debit', new Value(0)]),
+            new Coalesce(['credit', new Value(0)])
+        );
+        return $this->payments()->sum($expression);
+    }
+
+    public function getPendingAmountAttribute(): string
+    {
+        $expression = new Subtract(
+            new Coalesce(['debit', new Value(0)]),
+            new Coalesce(['credit', new Value(0)])
+        );
+        return $this->payments()->whereType(PaymentType::Invoice)->sum($expression);
+    }
+
+
+    public function getWithdrawAmountAttribute(): string
+    {
+        $expression = new Subtract(
+            new Coalesce(['debit', new Value(0)]),
+            new Coalesce(['credit', new Value(0)])
+        );
+        return $this->payments()->whereType(PaymentType::Withdraw)->sum($expression);
+    }
+
 
 }

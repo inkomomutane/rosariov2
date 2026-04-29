@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Contracts\WithFilesInterface;
+use App\Enum\PaymentType;
 use App\Traits\WithFiles;
 use Database\Factories\PaymentFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -32,6 +34,7 @@ class Payment extends Model implements  WithFilesInterface,HasMedia
         'payment_date',
         'transaction_code',
         'posted_date',
+        'type'
     ];
 
     protected function casts(): array
@@ -41,6 +44,12 @@ class Payment extends Model implements  WithFilesInterface,HasMedia
             'due_date' => 'date:Y-m-d',
             'payment_date' => 'date:Y-m-d',
             'posted_date' => 'date:Y-m-d',
+            'type' => PaymentType::class
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

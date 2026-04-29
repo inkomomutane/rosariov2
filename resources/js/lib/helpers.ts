@@ -17,7 +17,7 @@ export function formatDateDifferenceString(startDate?: Date, endDate?: Date): st
 }
 
 export const MONEY = (value: number | string) => currency(value, {
-    symbol: 'MZN',
+    symbol: 'MZN ',
     precision: 2,
     separator: ',',
     decimal: '.'

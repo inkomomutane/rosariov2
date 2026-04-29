@@ -9,6 +9,18 @@ export type ColumnOrderDto = {
     field_name: string;
     showing: boolean;
 };
+export type DoctorDto = {
+    name: string;
+    last_name: string;
+    hospital: string | null;
+    specialization: string | null;
+    license_number: string | null;
+    license_issue_date: any | string | null;
+    license_expiry_date: any | string | null;
+    years_of_experience: number | null;
+    medical_school: string | null;
+    graduation_date: any | string | null;
+};
 export type FileData = {
     name: string;
     size: string;
@@ -70,6 +82,22 @@ export type PatientCaseStatus =
     | 'closed'
     | 'reopened'
     | 'cancelled';
+export type PaymentDataDto = {
+    id: string | null;
+    user_name: string | null;
+    invoice_code: string | null;
+    reference: string | null;
+    description: string | null;
+    transaction_code: string | null;
+    debit: string | null;
+    credit: string | null;
+    document_date: any | string | null;
+    due_date: any | string | null;
+    payment_date: any | string | null;
+    posted_date: any | string | null;
+    type: PaymentType | null;
+};
+export type PaymentType = 'invoice' | 'payment' | 'withdraw' | 'refund' | 'adjustment' | 'transfer';
 export type PersonDto = {
     name: string;
     last_name: string;

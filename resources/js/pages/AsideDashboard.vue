@@ -3,6 +3,7 @@ import { computed, PropType } from 'vue';
 import { ShieldCheck, Tag } from 'lucide-vue-next';
 import { ProfileDto, FullPatientCaseDto } from '@/types/generated';
 import { t } from '@/lib/utils';
+import { MONEY } from '@/lib/helpers';
 
 const props = defineProps({
     user: {
@@ -42,6 +43,10 @@ const stats = computed(() => [
         label: t('Status'),
         value: props.user?.verified ? 'Verified' : 'Pending'
     },
+    {
+        label: t('Balance'),
+        value:  props.user?.balance ?  MONEY(props.user.balance).format() : MONEY(0).format()
+    }
 ])
 
 const initials = computed(() => {

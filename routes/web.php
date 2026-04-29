@@ -3,7 +3,9 @@
 
 use App\Http\Controllers\FormUI\GetUiFieldsController;
 use App\Http\Controllers\FormUI\UpdateFormUIController;
+use App\Http\Controllers\UserPersonInfo\EditUserDoctorDetails;
 use App\Http\Controllers\UserPersonInfo\EditUserPersonDetails;
+use App\Http\Controllers\UserPersonInfo\UpdateDoctorDetails;
 use App\Http\Controllers\UserPersonInfo\UpdateUserPersonDetails;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +25,9 @@ Route::post('/ui-fields-update/{type}', UpdateFormUIController::class)->name('ui
 
 Route::get('dashboard/user/person/edit',EditUserPersonDetails::class)->name('dashboard.user-person-edit')->middleware(['auth', 'verified']);
 Route::post('dashboard/user/person/update',UpdateUserPersonDetails::class)->name('dashboard.user-person-update')->middleware(['auth', 'verified']);
+
+Route::get('dashboard/user/doctor/edit', EditUserDoctorDetails::class)->name('dashboard.user-doctor-edit');
+Route::post('dashboard/user/doctor/update', UpdateDoctorDetails::class)->name('dashboard.user-doctor-update');
 
 
 require __DIR__.'/auth.php';

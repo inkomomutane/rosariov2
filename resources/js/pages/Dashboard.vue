@@ -3,23 +3,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { InfiniteScroll } from "@inertiajs/vue3";
 import { t } from '@/lib/utils';
-import { EllipsisVertical  } from 'lucide-vue-next'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
-import {
-    Item,
-    ItemActions,
-    ItemContent,
-    ItemDescription,
-    ItemMedia,
-    ItemTitle,
-} from '@/components/ui/item'
-import { getInitials } from '@/composables/useInitials';
-import { FullPatientCaseDto } from '@/types/generated';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
-import { Image, Video, FileText, MoreHorizontal, ThumbsUp, MessageSquare, Share2, Send } from 'lucide-vue-next'
 import AsideDashboard from '@/pages/AsideDashboard.vue';
 import CaseShortComponent from '@/pages/CaseShortComponent.vue';
 
