@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\MyCases;
 
 use App\Data\FullPatientCaseDto;
+use App\Enum\CaseType;
+use App\Enum\Urgency;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -11,7 +13,15 @@ class MyCases
     public function __invoke(Request $request)
     {
         return Inertia::render('My/Cases/Index',[
-            'cases' =>  $this->handle($request->input('term',''),$request->input('per_page',12))
+            'cases' =>  $this->handle($request->input('term',''),$request->input('per_page',12)),
+            'person' => auth()->user()->person()->firstOrCreate([
+                'user_id' => auth()->id()
+            ], [
+                'name' => auth()->user()->name,
+                'last_name' => ''
+            ])->only(['name', 'last_name', 'id', 'gender', 'marital_status']),
+            'case_types' => CaseType::toValues(),
+            'urgencies' => Urgency::toValues(),
         ]);
     }
 

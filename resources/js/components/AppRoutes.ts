@@ -51,5 +51,12 @@ export const AppRoutes: NavItem[]  = [
         icon: DollarSign,
         routeName: 'balance',
         adminOnly: false,
+    },
+    {
+        title: t('Settings'),
+        href: route('case-pricing'),
+        icon: DollarSign,
+        routeName: 'case-pricing',
+        adminOnly: false,
     }
 ];

@@ -31,6 +31,7 @@ import TableListSelect from '@/components/VTable/TableListSelect.vue';
 import VTable from '@/components/VTable/VTable.vue';
 import ContainerBox from '@/components/Box/ContainerBox.vue';
 import { createColumnHelper } from '@tanstack/vue-table';
+import { Eye } from 'lucide-vue-next';
 
 const props = defineProps({
     doctor: { type: Object as PropType<ProfileDto>, required: true },

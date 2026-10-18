@@ -59,7 +59,7 @@ const initials = computed(() => {
 </script>
 
 <template>
-    <aside class="hidden md:block md:col-span-3 space-y-3">
+    <aside class="hidden md:block md:col-span-3 space-y-3 mt-4">
         <div class="flex items-center justify-center">
             <div class="w-80 space-y-3">
                 <!-- Profile Card -->

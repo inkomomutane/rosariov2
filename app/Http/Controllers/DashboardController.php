@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Data\FullPatientCaseDto;
 use App\Data\ProfileDto;
+use App\Enum\CaseType;
+use App\Enum\Urgency;
 use App\Models\Payment;
 use App\Services\CaseService;
 use Illuminate\Http\Request;
@@ -24,7 +26,7 @@ class DashboardController
         if ($person->is_doctor) {
             // Doctor Dashboard
             $assignedCases = FullPatientCaseDto::collect(
-                CaseService::getAssignedCases($person)
+                CaseService::getAssignedCases($person,$request->input('search', ''))
                     ->paginate(15)
             );
 
@@ -40,12 +42,20 @@ class DashboardController
                     'balance' => $balance,
                     'total_reviews' => \App\Models\PatientCase::where('last_reviewer_doctor_id', $person->id)->count(),
                 ],
+                'person' => auth()->user()->person()->firstOrCreate([
+                    'user_id' => auth()->id()
+                ], [
+                    'name' => auth()->user()->name,
+                    'last_name' => ''
+                ])->only(['name', 'last_name', 'id', 'gender', 'marital_status']),
+                'case_types' => CaseType::toValues(),
+                'urgencies' => Urgency::toValues(),
             ]);
         }
 
         // Patient Dashboard
         $patientCases = FullPatientCaseDto::collect(
-            CaseService::getPatientCases($person)
+            CaseService::getPatientCases($person,$request->input('search', ''))
                 ->paginate(15)
         );
 
@@ -57,6 +67,14 @@ class DashboardController
                 'total_cases' => $person->cases()->count() ?? 0,
                 'pending_cases' => $person->cases()->where('status', '!=', 'closed')->count() ?? 0,
             ],
+            'person' => auth()->user()->person()->firstOrCreate([
+                'user_id' => auth()->id()
+            ], [
+                'name' => auth()->user()->name,
+                'last_name' => ''
+            ])->only(['name', 'last_name', 'id', 'gender', 'marital_status']),
+            'case_types' => CaseType::toValues(),
+            'urgencies' => Urgency::toValues(),
         ]);
     }
 }

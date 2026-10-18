@@ -56,6 +56,7 @@ class FullPatientCaseDto extends Data
         public ?string            $last_reviewer_doctor_name,
         public ?string            $id = null,
         public Collection|array|null              $attachments = [],
+        public null|array|Collection $uploaded_attachments = null,
 
 
 
@@ -89,7 +90,8 @@ class FullPatientCaseDto extends Data
             assigned_doctor_name: $case->assignedDoctor?->name . ' ' . $case->assignedDoctor?->last_name,
             last_reviewer_doctor_name: $case->lastReviewerDoctor?->name . ' ' . $case->lastReviewerDoctor?->last_name,
             id: $case->id,
-            attachments:  $case->uploaded_attachments
+            attachments:  $case->uploaded_attachments,
+            uploaded_attachments: $case->uploaded_attachments,
         );
     }
 }

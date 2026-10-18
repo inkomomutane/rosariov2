@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Cases\DeleteCasePricing;
+use App\Http\Controllers\Cases\ListCasePricing;
+use App\Http\Controllers\Cases\StoreCasePricing;
+use App\Http\Controllers\Cases\UpdateCasePricing;
 use App\Http\Controllers\MyCases\CreateCase;
 use App\Http\Controllers\MyCases\EditCase;
 use App\Http\Controllers\MyCases\MyCases;
@@ -32,6 +36,15 @@ Route::match(['post','put','patch'],'/dashboard/my-cases/{case}/update', UpdateM
 Route::get('/dashboard/unassigned-cases', UnassignedCasesController::class)->name('unassigned-cases')->middleware(['auth', 'verified']);
 Route::get('/dashboard/assigned-cases', AssignedCasesController::class)->name('assigned-cases')->middleware(['auth', 'verified']);
 Route::get('/dashboard/patient-cases-list', PatientCasesListController::class)->name('patient-cases-list')->middleware(['auth', 'verified']);
+
+
+// case pricing
+
+Route::get('/dashboard/case-pricing', ListCasePricing::class)->name('case-pricing')->middleware(['auth', 'verified']);
+Route::post('/dashboard/case-pricing/store', StoreCasePricing::class)->name('case-pricing-store')->middleware(['auth', 'verified']);
+Route::match(['put','post'],'/dashboard/case-pricing/{pricing}/update', UpdateCasePricing::class)->name('case-pricing-update')->middleware(['auth', 'verified']);
+Route::delete('/dashboard/case-pricing/{pricing}/delete', DeleteCasePricing::class)->name('case-pricing-delete')->middleware(['auth', 'verified']);
+
 
 // Case Actions
 Route::post('/dashboard/cases/{case}/accept', AcceptCaseController::class)->name('case-accept')->middleware(['auth', 'verified']);

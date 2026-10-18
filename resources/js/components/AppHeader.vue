@@ -18,10 +18,10 @@ import UserMenuContent from '@/components/UserMenuContent.vue';
 import { getInitials } from '@/composables/useInitials';
 import type { BreadcrumbItem, NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { BookOpen, LucideMoon, LucideSun, Menu, Monitor, Moon, Search, Sun } from 'lucide-vue-next';
+import { computed, ref, useId, watch } from 'vue';
 import { AppRoutes } from '@/components/AppRoutes';
-
+import { useAppearance } from '@/composables/useAppearance';
 interface Props {
     breadcrumbs?: BreadcrumbItem[];
 }
@@ -35,17 +35,25 @@ const auth = computed(() => page.props.auth);
 
 const isCurrentRoute = computed(() => (routeName: string) => route().current(routeName ?? ''));
 
-const activeItemStyles = computed(() => (routeName: string) => (isCurrentRoute.value(routeName) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : ''),
+const activeItemStyles = computed(
+    () => (routeName: string) => (isCurrentRoute.value(routeName) ? 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100' : ''),
 );
 
 const mainNavItems: NavItem[] = ref(AppRoutes);
 
+const { appearance, updateAppearance } = useAppearance();
+
+const tabs = [
+    { value: 'light', Icon: Sun, label: 'Light' },
+    { value: 'dark', Icon: Moon, label: 'Dark' },
+    { value: 'system', Icon: Monitor, label: 'System' },
+] as const;
 </script>
 
 <template>
-    <div class="sticky top-0 z-50 border-b border-sidebar-border/80 bg-white dark:bg-zinc-950 dark:border-zinc-800">
+    <div class="border-sidebar-border/80 sticky top-0 z-50 border-b bg-white dark:border-zinc-800 dark:bg-zinc-950">
         <div class="">
-            <div class="mx-auto flex h-16 items-center px-4 md:max-w-7xl ">
+            <div class="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
                 <!-- Mobile Menu -->
                 <div class="lg:hidden">
                     <Sheet>
@@ -61,18 +69,17 @@ const mainNavItems: NavItem[] = ref(AppRoutes);
                             </SheetHeader>
                             <div class="flex h-full flex-1 flex-col justify-between space-y-4 py-6">
                                 <nav class="-mx-3 space-y-1">
-                                    <template  v-for="item in mainNavItems"   :key="item.title">
+                                    <template v-for="item in mainNavItems" :key="item.title">
                                         <Link
                                             v-if="(item.adminOnly && auth.user.is_admin == true) || item.adminOnly === false"
                                             :href="item.href"
-                                            class="flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent"
+                                            class="hover:bg-accent flex items-center gap-x-3 rounded-lg px-3 py-2 text-sm font-medium"
                                             :class="activeItemStyles(item.routeName)"
                                         >
                                             <component v-if="item.icon" :is="item.icon" class="h-5 w-5" />
                                             {{ item.title }}
                                         </Link>
                                     </template>
-
                                 </nav>
                                 <div class="flex flex-col space-y-4">
                                     <a
@@ -97,11 +104,11 @@ const mainNavItems: NavItem[] = ref(AppRoutes);
                 </Link>
 
                 <!-- Desktop Menu -->
-                <div class="hidden h-full lg:flex lg:flex-1 ">
-                    <NavigationMenu class="ml-10 flex h-full items-stretch ">
+                <div class="hidden h-full lg:flex lg:flex-1">
+                    <NavigationMenu class="ml-10 flex h-full items-stretch">
                         <NavigationMenuList class="flex h-full items-stretch space-x-2">
                             <NavigationMenuItem v-for="(item, index) in mainNavItems" :key="index" class="relative flex h-full items-center">
-                                <Link :href="item.href"  v-if="(item.adminOnly && auth.user.is_admin == true) || item.adminOnly === false"  >
+                                <Link :href="item.href" v-if="(item.adminOnly && auth.user.is_admin == true) || item.adminOnly === false">
                                     <NavigationMenuLink
                                         :class="[navigationMenuTriggerStyle(), activeItemStyles(item.routeName), 'h-9 cursor-pointer px-3']"
                                     >
@@ -120,9 +127,21 @@ const mainNavItems: NavItem[] = ref(AppRoutes);
 
                 <div class="ml-auto flex items-center space-x-2">
                     <div class="relative flex items-center space-x-1">
-                        <Button variant="ghost" size="icon" class="group h-9 w-9 cursor-pointer">
-                            <Search class="size-5 opacity-80 group-hover:opacity-100" />
-                        </Button>
+                        <div :class="['inline-flex gap-1 rounded-3xl bg-neutral-100 p-1 dark:bg-neutral-800', props.class]">
+                            <button
+                                v-for="{ value, Icon, label } in tabs"
+                                :key="value"
+                                @click="updateAppearance(value)"
+                                :class="[
+                                    'flex items-center rounded-full p-2 transition-colors',
+                                    appearance === value
+                                        ? 'bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100'
+                                        : 'text-neutral-500 hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60',
+                                ]"
+                            >
+                                <component :is="Icon" class="h-4 w-4" />
+                            </button>
+                        </div>
                     </div>
 
                     <DropdownMenu>
@@ -130,7 +149,7 @@ const mainNavItems: NavItem[] = ref(AppRoutes);
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                class="relative size-10 w-auto rounded-full p-1 focus-within:ring-2 focus-within:ring-primary"
+                                class="focus-within:ring-primary relative size-10 w-auto rounded-full p-1 focus-within:ring-2"
                             >
                                 <Avatar class="size-8 overflow-hidden rounded-full">
                                     <AvatarImage v-if="auth.user.avatar" :src="auth.user.avatar" :alt="auth.user.name" />
@@ -138,7 +157,6 @@ const mainNavItems: NavItem[] = ref(AppRoutes);
                                         {{ getInitials(auth.user?.name) }}
                                     </AvatarFallback>
                                 </Avatar>
-
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" class="w-56">
@@ -149,7 +167,7 @@ const mainNavItems: NavItem[] = ref(AppRoutes);
             </div>
         </div>
 
-        <div v-if="props.breadcrumbs.length > 1" class="flex w-full border-b border-sidebar-border/70">
+        <div v-if="props.breadcrumbs.length > 1" class="border-sidebar-border/70 flex w-full border-b">
             <div class="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
                 <Breadcrumbs :breadcrumbs="breadcrumbs" />
             </div>
