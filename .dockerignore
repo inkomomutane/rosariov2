@@ -1,0 +1,67 @@
+
+# Git
+.git
+.gitignore
+.gitattributes
+.github
+
+# Node.js
+node_modules
+npm-debug.log*
+yarn-error.log*
+.pnpm-store
+.npm
+
+# PHP dependencies (installed inside Docker)
+vendor
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Laravel runtime files
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/testing/*
+bootstrap/cache/*.php
+
+# Local databases
+*.sqlite
+*.sqlite-journal
+
+# Frontend generated files
+public/build
+public/hot
+public/excel-temp
+
+# Tests and development tools
+tests
+coverage
+.phpunit.cache
+.phpunit.result.cache
+phpunit.xml
+phpunit.xml.dist
+phpstan.neon
+phpstan.neon.dist
+.phpactor.yml
+
+# IDE and OS files
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+
+# Docker and local infrastructure
+docker-compose*.yml
+compose*.yaml
+Dockerfile*
+.dockerignore
+
+# Documentation
+README.md
+docs
