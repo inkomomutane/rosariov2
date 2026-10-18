@@ -24,5 +24,16 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => \Hash::make('password'),
         ]);
+
+        User::updateOrCreate([
+            'email' => 'mutamira@telemed.com'
+        ], [
+            'name' => 'Mutamira',
+            'email' =>  'mutamira@telemed.com',
+            'email_verified_at' => now(),
+            'password' => \Hash::make('MeuPassword@123'),
+            'sex' => Sex::MALE,
+            'marital_status' => MaritalStatus::SINGLE,
+        ]);
     }
 }
