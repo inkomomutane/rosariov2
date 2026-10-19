@@ -103,7 +103,7 @@ class PayMyCaseInvoice
             );
         }
 
-        DB::transaction(function () use ($invoice, $invoiceData, $response): void {
+        DB::transaction(static function () use ($invoice, $invoiceData, $response): void {
             $date = now();
             $transactionId = $response->getTransactionId();
 

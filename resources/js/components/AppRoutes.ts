@@ -32,20 +32,6 @@ export const AppRoutes: NavItem[]  = [
         adminOnly: false,
     },
     {
-        title: t('Assigned Cases'),
-        href: route('assigned-cases'),
-        icon: CheckSquare,
-        routeName: 'assigned-cases',
-        adminOnly: false,
-    },
-    {
-        title: t('Unassigned Cases'),
-        href: route('unassigned-cases'),
-        icon: FileText,
-        routeName: 'unassigned-cases',
-        adminOnly: false,
-    },
-    {
         title: t('Balance'),
         href: route('balance'),
         icon: DollarSign,

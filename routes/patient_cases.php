@@ -36,8 +36,6 @@ Route::get('/dashboard/my-cases/{case}/edit', EditCase::class)->name('my-cases-e
 Route::match(['post','put','patch'],'/dashboard/my-cases/{case}/update', UpdateMyCase::class)->name('my-cases-update');
 
 // Case Filtering Views
-Route::get('/dashboard/unassigned-cases', UnassignedCasesController::class)->name('unassigned-cases')->middleware(['auth', 'verified']);
-Route::get('/dashboard/assigned-cases', AssignedCasesController::class)->name('assigned-cases')->middleware(['auth', 'verified']);
 Route::get('/dashboard/patient-cases-list', PatientCasesListController::class)->name('patient-cases-list')->middleware(['auth', 'verified']);
 
 
@@ -55,12 +53,7 @@ Route::get('/dashboard/get/case/{case}/invoice', GetMyCaseInvoiceData::class)->n
 
 Route::post('/dashboard/pay/case/{case}/invoice', PayMyCaseInvoice::class)->name('pay-my-case-invoice')->middleware(['auth', 'verified']);
 
-Route::post('/dashboard/cases/{case}/accept', AcceptCaseController::class)->name('case-accept')->middleware(['auth', 'verified']);
-Route::post('/dashboard/cases/{case}/reject', RejectCaseController::class)->name('case-reject')->middleware(['auth', 'verified']);
-Route::post('/dashboard/cases/{case}/complete', CompleteCaseController::class)->name('case-complete')->middleware(['auth', 'verified']);
-Route::post('/dashboard/cases/{case}/cancel', CancelCaseController::class)->name('case-cancel')->middleware(['auth', 'verified']);
-Route::post('/dashboard/cases/{case}/request-info', RequestMoreInfoController::class)->name('case-request-info')->middleware(['auth', 'verified']);
-Route::post('/dashboard/cases/{case}/second-review', SecondReviewController::class)->name('case-second-review')->middleware(['auth', 'verified']);
+
 
 // Payments
 Route::post('/dashboard/invoices/{invoice}/payment', MakePaymentController::class)->name('invoice-payment')->middleware(['auth', 'verified']);

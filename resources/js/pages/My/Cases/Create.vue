@@ -61,7 +61,7 @@ const storeCase = () => {
                 </DialogTitle>
             </DialogHeader>
             <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div class="grid grid-cols-1 gap-4">
                     <div>
                         <Label for="title">{{ t('Title') }}</Label>
                         <Input id="title" ref="title" v-model="form.title" :placeholder="t('Title')" name="title" type="text" />
@@ -99,20 +99,21 @@ const storeCase = () => {
                         <InputError :message="form.errors.case_type" />
                     </div>
 
-                    <div class="md:col-span-2 lg:col-span-3">
+                    <div class="">
                         <Label for="description">{{ t('Description') }}</Label>
                         <Textarea
-                            rows="6"
+
                             id="description"
                             ref="description"
                             v-model="form.description"
                             :placeholder="t('Description')"
                             name="description"
                             type="text"
+                            class="min-h-32"
                         />
                         <InputError :message="form.errors.description" />
                     </div>
-                    <div class="mr-10 md:col-span-2 lg:col-span-3">
+                    <div class="mr-10 ">
                         <Label for="attachments">{{ t('Attachments') }}</Label>
                         <FileInput
                             class="w-full"

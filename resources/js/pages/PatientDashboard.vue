@@ -29,6 +29,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    auth: {
+        type: Object,
+        required: true,
+    },
 });
 
 const breadcrumbs = [
@@ -62,7 +66,7 @@ const createCrudManager = ref(crudManager<FullPatientCaseDto>());
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="min-h-screen px-2 pt-4 md:px-4">
             <div class="mx-auto grid max-w-6xl grid-cols-1 gap-5 md:grid-cols-12">
-                <AsideDashboard :user="user" />
+                <AsideDashboard :user="auth.user" />
                 <main class="col-span-1 space-y-4 md:col-span-6">
                     <div class="relative mt-3 flex w-full flex-col gap-3 lg:mt-0 lg:flex-row lg:justify-end lg:space-x-2">
                         <div class="w-full">

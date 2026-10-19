@@ -158,9 +158,6 @@ const openPayModal = (medicalCase: FullPatientCaseDto) => {
                         </div>
 
                         <Button size="sm" variant="secondary">
-                            <span class="text-sm font-medium">
-                                {{ t('Save') }}
-                            </span>
                             <Bookmark class="size-4" />
                         </Button>
                     </div>

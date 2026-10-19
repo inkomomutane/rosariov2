@@ -1,132 +1,214 @@
+
 <script setup lang="ts">
-import { computed, PropType } from 'vue';
-import { ShieldCheck, Tag } from 'lucide-vue-next';
-import { ProfileDto, FullPatientCaseDto } from '@/types/generated';
+import { computed, type PropType } from 'vue';
+import {
+    ShieldCheck,
+    Tag,
+    MapPin,
+    Mail,
+    Phone,
+} from 'lucide-vue-next';
+
+import type { UserFrontData } from '@/types/generated';
 import { t } from '@/lib/utils';
 import { MONEY } from '@/lib/helpers';
 
 const props = defineProps({
     user: {
-        type: Object as PropType<ProfileDto>,
-        required: true
+        type: Object as PropType<UserFrontData>,
+        required: true,
     },
-    casesLength: {
-        type: Number,
-        default: () => 0
-    },
-})
+});
 
-// Derive profile information from the DTO
+const isDoctor = computed(() => props.user.type === 'doctor');
+
 const profileDisplay = computed(() => ({
-    name: props.user?.full_name || 'Anonymous User',
-    headline: props.user?.is_doctor
-        ? `${props.user.specialization || t('Medical Professional')} at ${props.user.hospital || t('Hospital')}`
+    name: props.user.name || t('Anonymous User'),
+
+    headline: isDoctor.value
+        ? props.user.specialization || t('Medical Professional')
         : t('Patient Profile'),
-    location: [props.user?.city, props.user?.province].filter(Boolean).join(', ') || t('Location not specified'),
-    avatarUrl: '', // DTO doesn't have an avatar field, keeping as empty for initials fallback
-    verified: props.user?.verified ?? false,
-    affiliations: props.user?.is_doctor
-        ? [props.user.specialization, t('Medical Professional')].filter(Boolean)
-        : [t('Patient Member')]
-}))
+
+    address: props.user.address || t('Location not specified'),
+
+    email: props.user.email,
+    phone: props.user.phone,
+
+    verified: props.user.verified ?? false,
+
+    affiliations: isDoctor.value
+        ? [
+            props.user.specialization,
+            t('Medical Professional'),
+        ].filter(Boolean)
+        : [t('Patient')],
+}));
 
 const stats = computed(() => [
     {
         label: t('Cases'),
-        value: props.casesLength || 0
+        value: props.user.cases ?? 0,
     },
     {
         label: t('Experience'),
-        value: props.user?.years_of_experience ? `${props.user.years_of_experience} Yrs` : 'N/A'
+        value: isDoctor.value
+            ? props.user.year_of_experience
+                ? `${props.user.year_of_experience} ${t('Years')}`
+                : 'N/A'
+            : null,
     },
     {
         label: t('Status'),
-        value: props.user?.verified ? 'Verified' : 'Pending'
+        value: props.user.verified
+            ? t('Verified')
+            : t('Unverified'),
     },
     {
         label: t('Balance'),
-        value:  props.user?.balance ?  MONEY(props.user.balance).format() : MONEY(0).format()
-    }
-])
+        value: MONEY(props.user.balance ?? '0.00').format(),
+    },
+].filter(stat => stat.value !== null));
 
 const initials = computed(() => {
     const name = profileDisplay.value.name.trim();
-    const parts = name.split(' ');
+
+    if (!name) return '??';
+
+    const parts = name.split(/\s+/);
+
     return parts.length >= 2
         ? (parts[0][0] + parts[1][0]).toUpperCase()
         : name.slice(0, 2).toUpperCase();
-})
+});
 </script>
 
 <template>
-    <aside class="hidden md:block md:col-span-3 space-y-3 mt-4">
+    <aside class="hidden md:col-span-3 md:block mt-4 space-y-3">
         <div class="flex items-center justify-center">
-            <div class="w-80 space-y-3">
+            <div class="w-80 max-w-full space-y-3">
+
                 <!-- Profile Card -->
-                <div class="rounded border border-gray-200 overflow-hidden bg-white dark:bg-zinc-900 dark:border-zinc-800">
-                    <div class="h-18 bg-zinc-800 relative">
-                        <div class="absolute bottom-0 left-4 translate-y-1/2 w-16 h-16 rounded-full border-2 border-white dark:border-zinc-900 overflow-hidden bg-gray-800">
-                            <img
-                                v-if="profileDisplay.avatarUrl"
-                                :src="profileDisplay.avatarUrl"
-                                :alt="profileDisplay.name"
-                                class="w-full h-full object-cover"
-                            />
-                            <div
-                                v-else
-                                class="w-full h-full flex items-center justify-center text-white text-lg font-semibold"
-                            >
-                                {{ initials }}
-                            </div>
+                <div
+                    class="overflow-hidden rounded border border-gray-200 bg-white dark:border-zinc-800 dark:bg-zinc-900"
+                >
+                    <!-- Cover -->
+                    <div class="relative h-18 bg-zinc-800">
+                        <div
+                            class="absolute bottom-0 left-4 flex h-16 w-16 translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-gray-800 text-lg font-semibold text-white dark:border-zinc-900"
+                        >
+                            {{ initials }}
                         </div>
                     </div>
 
-                    <div class="pt-10 pb-4 px-4">
-                        <div class="flex items-center gap-1.5 mb-0.5">
-                            <h2 class="text-base font-semibold text-gray-900 dark:text-zinc-100 leading-tight truncate max-w-50">
+                    <!-- Profile Information -->
+                    <div class="px-4 pb-4 pt-10">
+                        <div class="mb-0.5 flex items-center gap-1.5">
+                            <h2
+                                class="max-w-50 truncate text-base font-semibold leading-tight text-gray-900 dark:text-zinc-100"
+                            >
                                 {{ profileDisplay.name }}
                             </h2>
-                            <span v-if="profileDisplay.verified" class="shrink-0">
-                                <ShieldCheck class="w-4 h-4 text-blue-500" />
-                            </span>
+
+                            <ShieldCheck
+                                v-if="profileDisplay.verified"
+                                class="h-4 w-4 shrink-0 text-blue-500"
+                            />
                         </div>
 
-                        <p class="text-sm text-gray-600 dark:text-zinc-400 leading-snug mb-1">
+                        <p
+                            class="mb-2 text-sm leading-snug text-gray-600 dark:text-zinc-400"
+                        >
                             {{ profileDisplay.headline }}
                         </p>
 
-                        <p class="text-xs text-gray-500 dark:text-zinc-500 mb-3">
-                            {{ profileDisplay.location }}
-                        </p>
+                        <div class="mb-3 space-y-2">
+                            <!-- Address -->
+                            <div class="flex items-start gap-2">
+                                <MapPin
+                                    class="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-400"
+                                />
+                                <span
+                                    class="text-xs text-gray-500 dark:text-zinc-400"
+                                >
+                                    {{ profileDisplay.address }}
+                                </span>
+                            </div>
 
-                        <div class="space-y-1.5">
+                            <!-- Email -->
                             <div
-                                v-for="(aff, i) in profileDisplay.affiliations"
-                                :key="i"
+                                v-if="profileDisplay.email"
+                                class="flex items-start gap-2"
+                            >
+                                <Mail
+                                    class="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-400"
+                                />
+                                <span
+                                    class="min-w-0 break-all text-xs text-gray-500 dark:text-zinc-400"
+                                >
+                                    {{ profileDisplay.email }}
+                                </span>
+                            </div>
+
+                            <!-- Phone -->
+                            <div
+                                v-if="profileDisplay.phone"
                                 class="flex items-center gap-2"
                             >
-                                <Tag class="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                                <span class="text-xs text-gray-700 dark:text-zinc-300 leading-tight">
-                                    {{ aff }}
+                                <Phone
+                                    class="h-3.5 w-3.5 shrink-0 text-gray-400"
+                                />
+                                <span
+                                    class="text-xs text-gray-500 dark:text-zinc-400"
+                                >
+                                    {{ profileDisplay.phone }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Affiliations -->
+                        <div class="space-y-1.5">
+                            <div
+                                v-for="(affiliation, index) in profileDisplay.affiliations"
+                                :key="index"
+                                class="flex items-center gap-2"
+                            >
+                                <Tag
+                                    class="h-3.5 w-3.5 shrink-0 text-blue-500"
+                                />
+
+                                <span
+                                    class="text-xs leading-tight text-gray-700 dark:text-zinc-300"
+                                >
+                                    {{ affiliation }}
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Stats List -->
-                <div class="bg-white dark:bg-zinc-900 rounded-md border border-gray-200 dark:border-zinc-800 divide-y divide-gray-100 dark:divide-zinc-800">
+                <!-- Statistics -->
+                <div
+                    class="divide-y divide-gray-100 rounded-md border border-gray-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900"
+                >
                     <div
                         v-for="stat in stats"
                         :key="stat.label"
-                        class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-zinc-800/50 cursor-pointer transition-colors"
+                        class="flex items-center justify-between px-4 py-3"
                     >
-                        <span class="text-sm text-gray-700 dark:text-zinc-300">{{ stat.label }}</span>
-                        <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                        <span
+                            class="text-sm text-gray-700 dark:text-zinc-300"
+                        >
+                            {{ stat.label }}
+                        </span>
+
+                        <span
+                            class="text-sm  text-gray-700 dark:text-zinc-300 font-mono"
+                        >
                             {{ stat.value }}
                         </span>
                     </div>
                 </div>
+
             </div>
         </div>
     </aside>

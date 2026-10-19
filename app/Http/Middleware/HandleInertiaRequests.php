@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Data\UserFrontData;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -44,7 +45,7 @@ class HandleInertiaRequests extends Middleware
             'messages'       => flash()->getMessages(),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user(),
+                'user' => UserFrontData::fromModel($request->user()),
             ],
         ]);
     }

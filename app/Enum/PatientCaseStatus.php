@@ -9,8 +9,6 @@ enum PatientCaseStatus : string
 
     case SUBMITTED = 'submitted';
     case PAID = 'paid';
-    case AWAITING_ASSIGNMENT = 'awaiting_assignment';
-    case ASSIGNED = 'assigned';
     case UNDER_REVIEW = 'under_review';
     case REVIEWED = 'reviewed';
 
@@ -20,8 +18,7 @@ enum PatientCaseStatus : string
 
     case SECOND_REVIEW_SUBMITTED = 'second_review_submitted';
     case SECOND_REVIEW_PAID = 'second_review_paid';
-    case SECOND_REVIEW_AWAITING_ASSIGNMENT = 'second_review_awaiting_assignment';
-    case SECOND_REVIEW_ASSIGNED = 'second_review_assigned';
+
     case IN_SECONDARY_REVIEW = 'in_secondary_review';
     case SECONDARY_REVIEWED = 'secondary_reviewed';
 }

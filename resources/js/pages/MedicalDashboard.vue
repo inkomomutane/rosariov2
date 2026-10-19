@@ -13,9 +13,6 @@ import Create from '@/pages/My/Cases/Create.vue';
 
 const props = defineProps({
     cases: Object,
-    userType: String,
-    doctorStats: Object,
-    patientStats: Object,
     user: Object,
     case_types: {
         type: Array,
