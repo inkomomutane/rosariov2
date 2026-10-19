@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -27,7 +28,7 @@ class RegisteredUserController extends Controller
     /**
      * Handle an incoming registration request.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function store(Request $request): RedirectResponse
     {
@@ -35,6 +36,7 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'user_type' => 'required|string|in:patient,doctor',
         ]);
 
         $user = User::create([
@@ -48,6 +50,8 @@ class RegisteredUserController extends Controller
             'last_name' => '',
             'user_id' => $user->id,
             'created_by_id' => null,
+            'is_doctor' => $request->user_type === 'doctor',
+            'is_patient' =>  $request->user_type === 'patient' || $request->user_type === null || $request->user_type !== 'doctor',
         ]);
 
         event(new Registered($user));

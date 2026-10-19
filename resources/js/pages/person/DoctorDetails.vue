@@ -2,7 +2,7 @@
 import { PropType } from 'vue';
 import { DoctorDto } from '@/types/generated';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { t } from '@/lib/utils';
 import ContainerBox from '@/components/Box/ContainerBox.vue';
 import { Input } from '@/components/ui/input';
@@ -34,6 +34,29 @@ const updateDoctorInfo = () => {
     form.post(route('dashboard.user-doctor-update'))
 }
 
+const user = usePage().props.auth.user;
+
+
+const doctorTabs = [
+    {
+        title: t('Personal Details'),
+        url: route('dashboard.user-person-edit'),
+        isActive: route().current('dashboard.user-person-edit'),
+    },
+    {
+        title: t('Professional Details'),
+        url: route('dashboard.user-doctor-edit'),
+        isActive: route().current('dashboard.user-doctor-edit'),
+    }
+]
+
+const patientTabs = [
+    {
+        title: t('Doctor Details'),
+        url: route('dashboard.user-person-edit'),
+        isActive: route().current('dashboard.user-person-edit'),
+    }
+]
 </script>
 
 <template>
@@ -43,18 +66,7 @@ const updateDoctorInfo = () => {
 
             <ContainerBox>
                 <template #tabs>
-                    <VTabs :tabs="[
-                  {
-                    title: t('Personal Details'),
-                    url: route('dashboard.user-person-edit'),
-                    isActive: route().current('dashboard.user-person-edit'),
-                  },
-                  {
-                    title: t('Doctor Details'),
-                    url: route('dashboard.user-doctor-edit'),
-                    isActive: route().current('dashboard.user-doctor-edit'),
-                  },
-                ]"
+                    <VTabs :tabs="user.type === 'doctor' ? doctorTabs : patientTabs"
                     />
                 </template>
 

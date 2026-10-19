@@ -22,8 +22,9 @@ class UserDto extends Data
 
     public static function fromModel(User $user): self
     {
+        $user->loadMissing(['person', 'payments']);
         return new self(
-            name: $user->name,
+            name: $user->person->name . ' ' . $user->person->last_name,
             email: $user->email,
         );
     }

@@ -19,8 +19,8 @@ import AppLogoIcon from '@/components/AppLogoIcon.vue';
                         Plataforma de telemedicina
                         <br>
                     </p>
-                    <ul class="flex gap-3 text-sm leading-normal">
-                        <li>
+                    <div class="flex flex-col gap-3 text-sm leading-normal">
+                        <div>
                             <Link
                                 v-if="$page.props.auth.user"
                                 :href="route('dashboard')"
@@ -37,8 +37,18 @@ import AppLogoIcon from '@/components/AppLogoIcon.vue';
                             >
                                 {{ $t('Log In') }}
                             </Link>
-                        </li>
-                    </ul>
+                        </div>
+                        <div>
+                            <Link
+
+                                :href="route('register')"
+                                target="_blank"
+                                class="inline-block rounded-sm border border-black bg-[#1b1b18] px-5 py-1.5 text-sm leading-normal text-white hover:border-black hover:bg-black dark:border-[#eeeeec] dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:border-white dark:hover:bg-white"
+                            >
+                                {{ $t('Register') }}
+                            </Link>
+                        </div>
+                    </div>
                 </div>
                 <div
                     class="relative -mb-px aspect-335/376 w-full shrink-0 overflow-hidden rounded-t-lg bg-green-400 lg:-ml-px lg:mb-0 lg:aspect-auto lg:w-[438px] lg:rounded-r-lg lg:rounded-t-none"

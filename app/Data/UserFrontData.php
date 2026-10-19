@@ -27,13 +27,17 @@ class UserFrontData extends Data
     }
 
 
-    public static function fromModel(User $user): self
+    public static function fromModel(?User $user): ?self
     {
+        if (!$user) {
+            return null;
+        }
+
 
         $user->loadMissing(['person', 'payments']);
 
         return new self(
-            name: $user->name,
+            name: $user->person->name . ' ' . $user->person->last_name,
             email: $user->email,
             type: $user->person?->is_doctor ? 'doctor' : 'paciente',
             verified: (bool)$user->person?->verified,
@@ -49,21 +53,21 @@ class UserFrontData extends Data
     {
         $lines = [];
         $person = $user->person;
-        if($person->address_one) {
+        if ($person->address_one) {
             $lines[] = $person->address_one;
-        }elseif($person->address_two) {
+        } elseif ($person->address_two) {
             $lines[] = $person->address_two;
-        }elseif($person->address_three) {
+        } elseif ($person->address_three) {
             $lines[] = $person->address_three;
-        }elseif ($person->address_four) {
+        } elseif ($person->address_four) {
             $lines[] = $person->address_four;
         }
 
-        if($person->city) {
+        if ($person->city) {
             $lines[] = $person->city;
         }
 
-        if($person->province) {
+        if ($person->province) {
             $lines[] = $person->state;
         }
 
@@ -85,7 +89,7 @@ class UserFrontData extends Data
             return $person->phone_three;
         }
 
-        if($person->phone_four) {
+        if ($person->phone_four) {
             return $person->phone_four;
         }
 

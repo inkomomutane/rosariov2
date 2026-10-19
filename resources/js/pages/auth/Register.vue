@@ -7,12 +7,15 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { t } from '@/lib/utils';
+import VSyncSelect from '@/components/VSyncSelect.vue';
 
 const form = useForm({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
+    user_type: 'patient',
 });
 
 const submit = () => {
@@ -32,6 +35,23 @@ const submit = () => {
                     <Label for="name">{{ $t('Name') }}</Label>
                     <Input id="name" type="text" required autofocus tabindex="1" autocomplete="name" v-model="form.name" :placeholder="$t('Full name')" />
                     <InputError :message="form.errors.name" />
+                </div>
+                <div>
+                    <Label for="name">{{ $t('Registar como') }}</Label>
+                    <VSyncSelect
+                        :options="[
+                            { key: 'patient', value: t('Paciente') },
+                            { key: 'doctor', value: t('Médico') },
+                        ]"
+                        :reduce="(option) => option.key"
+                        :get-label="(option) => t(option.value.toString())"
+                        id="priority"
+                        ref="priority"
+                        v-model="form.user_type"
+                        :placeholder="t('Registar como')"
+                        name="priority"
+                    />
+                    <InputError :message="form.errors.user_type" />
                 </div>
 
                 <div class="grid gap-2">

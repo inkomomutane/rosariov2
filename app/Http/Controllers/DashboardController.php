@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Data\FullPatientCaseDto;
 use App\Data\ProfileDto;
+use App\Data\UserFrontData;
 use App\Enum\CaseType;
 use App\Enum\Urgency;
 use App\Services\DoctorCaseServices;
@@ -25,7 +26,7 @@ class DashboardController
         $search = $request->input('search', '');
 
         $shared = [
-            'user' => ProfileDto::from($user),
+            'user' => UserFrontData::from($user),
             'person' => $person->only([
                 'name',
                 'last_name',

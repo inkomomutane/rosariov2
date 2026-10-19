@@ -102,7 +102,6 @@ const storeCase = () => {
                     <div class="">
                         <Label for="description">{{ t('Description') }}</Label>
                         <Textarea
-
                             id="description"
                             ref="description"
                             v-model="form.description"
