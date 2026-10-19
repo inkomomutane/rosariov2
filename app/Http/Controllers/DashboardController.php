@@ -33,7 +33,7 @@ class DashboardController
             $balance = Payment::where('user_id', $user->id)->sum('credit') -
                        Payment::where('user_id', $user->id)->sum('debit');
 
-            return Inertia::render('Dashboard', [
+            return Inertia::render('MedicalDashboard', [
                 'userType' => 'doctor',
                 'cases' => Inertia::scroll(fn() => $assignedCases),
                 'user' => ProfileDto::from($user),
@@ -59,7 +59,7 @@ class DashboardController
                 ->paginate(15)
         );
 
-        return Inertia::render('Dashboard', [
+        return Inertia::render('PatientDashboard', [
             'userType' => 'patient',
             'cases' => Inertia::scroll(fn() => $patientCases),
             'user' =>ProfileDto::from($user),

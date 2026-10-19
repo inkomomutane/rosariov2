@@ -82,4 +82,11 @@ class PatientCase extends Model implements HasMedia,WithFilesInterface
         return $this->hasMany(CaseReview::class, 'case_id');
     }
 
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class, 'patient_case_id');
+    }
+
+
 }

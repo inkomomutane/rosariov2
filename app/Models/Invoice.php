@@ -33,6 +33,7 @@ class Invoice extends Model implements  WithFilesInterface,HasMedia
         'status',
         'reference',
         'notes',
+        'patient_case_id',
     ];
 
     protected function casts(): array
@@ -55,6 +56,12 @@ class Invoice extends Model implements  WithFilesInterface,HasMedia
     public function rows (): HasMany
     {
         return $this->hasMany(InvoiceRow::class, 'invoice_code', 'code');
+    }
+
+
+    public function patientCase(): BelongsTo
+    {
+        return $this->belongsTo(PatientCase::class, 'patient_case_id', 'id');
     }
 
 }

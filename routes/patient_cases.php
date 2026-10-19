@@ -19,6 +19,7 @@ use App\Http\Controllers\Cases\CompleteCaseController;
 use App\Http\Controllers\Cases\CancelCaseController;
 use App\Http\Controllers\Cases\RequestMoreInfoController;
 use App\Http\Controllers\Cases\SecondReviewController;
+use App\Http\Controllers\PatientCase\ViewPatientCase;
 use App\Http\Controllers\Payments\MakePaymentController;
 use App\Http\Controllers\Payments\UserBalanceController;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +48,10 @@ Route::delete('/dashboard/case-pricing/{pricing}/delete', DeleteCasePricing::cla
 
 
 // Case Actions
+Route::get('/dashboard/cases/{case}', ViewPatientCase::class)->name('case-view')->middleware(['auth', 'verified']);
+
+
+
 Route::post('/dashboard/cases/{case}/accept', AcceptCaseController::class)->name('case-accept')->middleware(['auth', 'verified']);
 Route::post('/dashboard/cases/{case}/reject', RejectCaseController::class)->name('case-reject')->middleware(['auth', 'verified']);
 Route::post('/dashboard/cases/{case}/complete', CompleteCaseController::class)->name('case-complete')->middleware(['auth', 'verified']);

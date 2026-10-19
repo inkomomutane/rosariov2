@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { crudManager, t } from '@/lib/utils';
 import AsideDashboard from '@/pages/AsideDashboard.vue';
-import CaseShortComponent from '@/pages/CaseShortComponent.vue';
+import CaseShortComponent from '@/pages/MedicalCase.vue';
 import { FullPatientCaseDto } from '@/types/generated';
 import { Head, InfiniteScroll, router } from '@inertiajs/vue3';
 import { Plus, SearchIcon } from 'lucide-vue-next';
