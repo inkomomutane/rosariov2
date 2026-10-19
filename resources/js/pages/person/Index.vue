@@ -52,7 +52,7 @@ const doctorTabs = [
 
 const patientTabs = [
     {
-        title: t('Doctor Details'),
+        title: t('Personal Details'),
         url: route('dashboard.user-person-edit'),
         isActive: route().current('dashboard.user-person-edit'),
     }
@@ -61,10 +61,9 @@ const patientTabs = [
 </script>
 
 <template>
-    <Head :title="$t('Details')" />
+    <Head :title="$t('Personal Details')" />
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-
             <ContainerBox>
                 <template #tabs>
                     <VTabs :tabs="user.type === 'doctor' ? doctorTabs : patientTabs"

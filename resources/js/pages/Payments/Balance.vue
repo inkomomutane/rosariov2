@@ -1,44 +1,62 @@
+
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { MONEY } from '@/lib/helpers';
 import { t } from '@/lib/utils';
+
 import {
     Card,
     CardAction,
-    CardContent,
     CardDescription,
     CardFooter,
     CardHeader,
-    CardTitle
+    CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import {
-    DollarSign,
-    TrendingUp,
-    TrendingDown,
-    CreditCard,
-    History,
-    Download
-} from 'lucide-vue-next';
+
 import { Badge } from '@/components/ui/badge';
-import { PropType,watch,ref,h } from 'vue';
-import { PaymentDataDto, ProfileDto } from '@/types/generated';
+
+import {
+    ArrowDownLeft,
+    ArrowUpRight,
+    CreditCard,
+    Eye,
+    History,
+    Wallet,
+} from 'lucide-vue-next';
+
+import { computed, h, ref, watch, type PropType } from 'vue';
+import type { PaymentDataDto, ProfileDto } from '@/types/generated';
+
 import VTableRowAction from '@/components/VTable/VTableRowAction.vue';
 import VTableHeader from '@/components/VTable/VTableHeader.vue';
 import VPagination from '@/components/VPagination.vue';
-import TableListSelect from '@/components/VTable/TableListSelect.vue';
 import VTable from '@/components/VTable/VTable.vue';
 import ContainerBox from '@/components/Box/ContainerBox.vue';
+
 import { createColumnHelper } from '@tanstack/vue-table';
-import { Eye } from 'lucide-vue-next';
 
 const props = defineProps({
-    doctor: { type: Object as PropType<ProfileDto>, required: true },
-    balance: { type: Number, required: true },
-    pending_amount: { type: Number, default: 0 },
-    withdraw_amount: { type: Number, default: 0 },
-    payments: { type: Object, required: true },
+    doctor: {
+        type: Object as PropType<ProfileDto>,
+        required: true,
+    },
+    balance: {
+        type: Number,
+        required: true,
+    },
+    pending_amount: {
+        type: Number,
+        default: 0,
+    },
+    withdraw_amount: {
+        type: Number,
+        default: 0,
+    },
+    payments: {
+        type: Object,
+        required: true,
+    },
 });
 
 const breadcrumbs = [
@@ -46,69 +64,233 @@ const breadcrumbs = [
     { title: t('Overview'), href: '/dashboard/balance' },
 ];
 
-const data = ref([]);
+const data = ref<PaymentDataDto[]>([]);
 
 watch(
     () => props.payments?.data,
     (value) => {
         data.value = value ?? [];
     },
-    { immediate: true, deep: true },
+    { immediate: true },
 );
-const buildActions = (row: PaymentDataDto) => {
-    return [
-        {
-            label: t('View'),
-            icon: Eye,
-            onClick: () =>  {},
-        },
-    ];
+
+// ---------------------------------------------
+// Formatting
+// ---------------------------------------------
+
+const locale = 'en-GB';
+
+const dateFormatter = new Intl.DateTimeFormat(locale, {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'Africa/Maputo',
+});
+
+const timeFormatter = new Intl.DateTimeFormat(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Africa/Maputo',
+});
+
+const formatDate = (value: string | null | undefined) => {
+    if (!value) return '—';
+
+    // Preserve calendar dates without timezone shifts.
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        const [year, month, day] = value.split('-').map(Number);
+        const date = new Date(Date.UTC(year, month - 1, day, 12));
+
+        return dateFormatter.format(date);
+    }
+
+    const date = new Date(value);
+
+    return Number.isNaN(date.getTime())
+        ? '—'
+        : dateFormatter.format(date);
 };
+
+const formatTime = (value: string | null | undefined) => {
+    if (!value || !/[T ]\d{2}:\d{2}/.test(value)) {
+        return null;
+    }
+
+    const date = new Date(value);
+
+    return Number.isNaN(date.getTime())
+        ? null
+        : timeFormatter.format(date);
+};
+
+const formatMoney = (value: number | string | null | undefined) => {
+    if(!value || isNaN(Number(value)) || MONEY(value).value === 0) return '—';
+
+
+    return MONEY(Number(value ?? 0)).format();
+};
+
+const formatType = (value: string | null | undefined) => {
+    if (!value) return '—';
+
+    return t(
+        value
+            .replace(/[_-]/g, ' ')
+            .replace(/\b\w/g, (character) => character.toUpperCase()),
+    );
+};
+
+const totalPayments = computed(() => props.payments?.total ?? 0);
+
+// ---------------------------------------------
+// Actions
+// ---------------------------------------------
+
+const buildActions = (row: PaymentDataDto) => [
+    {
+        label: t('View'),
+        icon: Eye,
+        onClick: () => {},
+    },
+];
+
+// ---------------------------------------------
+// Table
+// ---------------------------------------------
+
 const columnHelper = createColumnHelper<PaymentDataDto>();
+
+const header = (column: any, title: string) =>
+    h(VTableHeader, {
+        column,
+        title: t(title),
+        class: 'rounded-none border-none text-muted-foreground',
+    });
+
+const moneyCell = (
+    value: number | string | null | undefined,
+    colour: string,
+) =>
+    h(
+        'div',
+        {
+            class: `px-4 text-right font-mono text-xs sm:text-sm font-medium tabular-nums whitespace-nowrap ${colour}`,
+        },
+        formatMoney(value),
+    );
+
 const columns = [
     columnHelper.accessor('invoice_code', {
-        header: ({ column }) => h(VTableHeader, { column, title: t('Invoice'), class: 'rounded-none border-none text-muted-foreground' }),
-        cell: ({ row }) => h('span', { class: 'ps-4 font-medium' }, row.original.invoice_code || '-'),
+        header: ({ column }) => header(column, 'Invoice'),
+        cell: ({ row }) =>
+            h(
+                'span',
+                {
+                    class: 'ps-4 font-medium text-foreground whitespace-nowrap',
+                },
+                row.original.invoice_code || '—',
+            ),
         meta: { label: t('Invoice') },
     }),
+
     columnHelper.accessor('user_name', {
-        header: ({ column }) => h(VTableHeader, { column, title: t('User name'), class: 'rounded-none border-none text-muted-foreground' }),
-        cell: ({ row }) => h('span', { class: 'ps-4' }, row.original.user_name),
+        header: ({ column }) => header(column, 'User name'),
+        cell: ({ row }) =>
+            h(
+                'span',
+                {
+                    class: 'ps-4 text-sm text-foreground whitespace-nowrap',
+                },
+                row.original.user_name || '—',
+            ),
         meta: { label: t('User name') },
     }),
+
     columnHelper.accessor('transaction_code', {
-        header: ({ column }) => h(VTableHeader, { column, title: t('Transaction'), class: 'rounded-none border-none text-muted-foreground' }),
-        cell: ({ row }) => h('span', { class: 'ps-4' }, row.original.transaction_code),
+        header: ({ column }) => header(column, 'Transaction'),
+        cell: ({ row }) =>
+            h(
+                'span',
+                {
+                    class: 'ps-4 font-mono text-xs text-muted-foreground whitespace-nowrap',
+                },
+                row.original.transaction_code || '—',
+            ),
         meta: { label: t('Transaction') },
     }),
+
     columnHelper.accessor('debit', {
-        header: ({ column }) => h(VTableHeader, { column, title: t('Debit'), class: 'rounded-none border-none text-muted-foreground' }),
-        cell: ({ row }) => h('span', { class: 'ps-4 text-red-500' }, row.original.debit),
+        header: ({ column }) => header(column, 'Debit'),
+        cell: ({ row }) =>
+            moneyCell(
+                row.original.debit,
+                '',
+            ),
         meta: { label: t('Debit') },
     }),
+
     columnHelper.accessor('credit', {
-        header: ({ column }) => h(VTableHeader, { column, title: t('Credit'), class: 'rounded-none border-none text-muted-foreground' }),
-        cell: ({ row }) => h('span', { class: 'ps-4 text-green-600' }, row.original.credit),
+        header: ({ column }) => header(column, 'Credit'),
+        cell: ({ row }) =>
+            moneyCell(
+                row.original.credit,
+                '',
+            ),
         meta: { label: t('Credit') },
     }),
+
     columnHelper.accessor('payment_date', {
-        header: ({ column }) => h(VTableHeader, { column, title: t('Payment Date'), class: 'rounded-none border-none text-muted-foreground' }),
-        cell: ({ row }) => h('span', { class: 'ps-4' }, row.original.payment_date),
+        header: ({ column }) => header(column, 'Payment Date'),
+        cell: ({ row }) => {
+            const value = row.original.payment_date;
+            return h(
+                'div',
+                {
+                    class: 'flex flex-col gap-0.5 ps-4 whitespace-nowrap',
+                },
+                [
+                    h(
+                        'span',
+                        {
+                            class: 'text-sm font-medium text-foreground tabular-nums',
+                        },
+                        formatDate(value),
+                    ),
+                ],
+            );
+        },
         meta: { label: t('Payment Date') },
     }),
+
     columnHelper.accessor('type', {
-        header: ({ column }) => h(VTableHeader, { column, title: t('Type'), class: 'rounded-none border-none text-muted-foreground' }),
-        cell: ({ row }) => h('span', { class: 'ps-4 capitalize' }, row.original.type),
+        header: ({ column }) => header(column, 'Type'),
+        cell: ({ row }) =>
+            h(
+                Badge,
+                {
+                    variant: 'secondary',
+                    class: 'ms-4 rounded-md px-2 py-0.5 text-xs font-medium whitespace-nowrap',
+                },
+                () => formatType(row.original.type),
+            ),
         meta: { label: t('Type') },
     }),
+
     columnHelper.display({
         id: 'actions',
         enablePinning: true,
-        header: () => h('span', {}, t('Actions')),
-        cell: ({ row }) => h(VTableRowAction, {
-            row: row,
-            actions: buildActions(row.original),
-        }),
+        header: () =>
+            h(
+                'span',
+                { class: 'text-xs text-muted-foreground' },
+                t('Actions'),
+            ),
+        cell: ({ row }) =>
+            h(VTableRowAction, {
+                row,
+                actions: buildActions(row.original),
+            }),
         meta: { label: t('Action') },
     }),
 ];
@@ -116,90 +298,174 @@ const columns = [
 
 <template>
     <Head :title="t('Overview')" />
-    <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="min-h-screen pt-6 px-4 md:px-6">
-            <div class="max-w-6xl mx-auto space-y-6">
-                <!-- Stats Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-none *:data-[slot=card]:rounded">
 
-                    <!-- Main Balance -->
-                    <Card class="@container/card border-primary/20">
-                        <CardHeader>
-                            <CardDescription>{{ t('Balance') }}</CardDescription>
-                            <CardTitle class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                {{ MONEY(props.balance).format() }}
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="min-h-screen px-4 py-6 md:px-6">
+            <div class="mx-auto max-w-6xl space-y-7">
+
+                <!-- Page heading -->
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <h1 class="text-2xl font-semibold tracking-tight">
+                            {{ t('Finanças') }}
+                        </h1>
+                        <p class="text-sm text-muted-foreground">
+                            {{ t('Extracto de pagamentos') }}
+                        </p>
+                    </div>
+
+                    <Badge
+                        variant="outline"
+                        class="gap-1.5 rounded-md px-3 py-1.5 text-xs font-normal"
+                    >
+                        <span class="size-1.5 rounded-full bg-emerald-500" />
+                        {{ t('Active') }}
+                    </Badge>
+                </div>
+
+                <!-- Financial summary -->
+                <div
+                    class="grid grid-cols-1 gap-4 md:grid-cols-3
+                           *:data-[slot=card]:rounded-lg
+                           *:data-[slot=card]:shadow-none"
+                >
+                    <!-- Balance -->
+                    <Card
+                        class="@container/card border-primary/20
+                               bg-gradient-to-br from-primary/5 via-card to-card"
+                    >
+                        <CardHeader class="gap-3">
+                            <CardDescription class="text-sm font-medium">
+                                {{ t('Balance') }}
+                            </CardDescription>
+
+                            <CardTitle
+                                class="font-mono text-2xl font-semibold
+                                       tracking-tight tabular-nums
+                                       @[250px]/card:text-3xl"
+                            >
+                                {{ formatMoney(balance) }}
                             </CardTitle>
+
                             <CardAction>
-                                <Badge variant="outline" class="">
-                                    {{ t('Active') }}
-                                </Badge>
+                                <div
+                                    class="flex size-9 items-center justify-center
+                                           rounded-lg bg-primary/10 text-primary"
+                                >
+                                    <Wallet class="size-4" />
+                                </div>
                             </CardAction>
                         </CardHeader>
-                        <CardFooter class="flex-col items-start gap-1.5 text-sm">
-                            <div class="text-muted-foreground italic">
+
+                        <CardFooter class="pt-0">
+                            <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                                <span class="size-1.5 rounded-full bg-emerald-500" />
                                 {{ t('User balance') }}
                             </div>
                         </CardFooter>
                     </Card>
 
-                    <!-- Total Credits -->
-                    <Card class="@container/card border-primary/20">
-                        <CardHeader>
-                            <CardDescription>{{ t('Pending payments') }}</CardDescription>
-                            <CardTitle class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                {{ MONEY(props.pending_amount).format() }}
-                            </CardTitle>
-                            <CardAction>
-                                <Badge variant="outline" class="">
-                                    <TrendingUp class="size-3 mr-1" />
+                    <!-- Pending -->
+                    <Card class="@container/card">
+                        <CardHeader class="gap-3">
+                            <CardDescription class="text-sm font-medium">
+                                {{ t('Pending payments') }}
+                            </CardDescription>
 
-                                </Badge>
+                            <CardTitle
+                                class="font-mono text-2xl font-semibold
+                                       tracking-tight tabular-nums
+                                       @[250px]/card:text-3xl"
+                            >
+                                {{ formatMoney(pending_amount) }}
+                            </CardTitle>
+
+                            <CardAction>
+                                <div
+                                    class="flex size-9 items-center justify-center
+                                           rounded-lg bg-amber-500/10
+                                           text-amber-600 dark:text-amber-400"
+                                >
+                                    <History class="size-4" />
+                                </div>
                             </CardAction>
                         </CardHeader>
-                        <CardFooter class="flex-col items-start gap-1.5 text-sm">
-                            <div class="text-muted-foreground">
+
+                        <CardFooter class="pt-0">
+                            <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                                <span class="size-1.5 rounded-full bg-amber-500" />
                                 {{ t('Payments that are being processed') }}
                             </div>
                         </CardFooter>
                     </Card>
 
-                    <!-- Total Debits -->
-                    <Card class="@container/card border-primary/20">
-                        <CardHeader>
-                            <CardDescription>{{ t('Withdraw amount') }}</CardDescription>
-                            <CardTitle class="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                {{ MONEY(props.withdraw_amount).format() }}
+                    <!-- Withdrawals -->
+                    <Card class="@container/card">
+                        <CardHeader class="gap-3">
+                            <CardDescription class="text-sm font-medium">
+                                {{ t('Withdraw amount') }}
+                            </CardDescription>
+
+                            <CardTitle
+                                class="font-mono text-2xl font-semibold
+                                       tracking-tight tabular-nums
+                                       @[250px]/card:text-3xl"
+                            >
+                                {{ formatMoney(withdraw_amount) }}
                             </CardTitle>
+
                             <CardAction>
-                                <Badge variant="outline" class="">
-                                    <CreditCard class="size-3 mr-1" />
-                                    {{ t('Paid') }}
-                                </Badge>
+                                <div
+                                    class="flex size-9 items-center justify-center
+                                           rounded-lg bg-emerald-500/10
+                                           text-emerald-600 dark:text-emerald-400"
+                                >
+                                    <ArrowUpRight class="size-4" />
+                                </div>
                             </CardAction>
                         </CardHeader>
-                        <CardFooter class="flex-col items-start gap-1.5 text-sm">
 
-                            <div class="text-muted-foreground">
+                        <CardFooter class="pt-0">
+                            <div class="flex items-center gap-2 text-xs text-muted-foreground">
+                                <CreditCard class="size-3.5" />
                                 {{ t('Withdrawals processed') }}
                             </div>
                         </CardFooter>
                     </Card>
                 </div>
 
-
-                <!-- Payments Table -->
+                <!-- Payments history -->
                 <ContainerBox>
-
                     <template #header-left>
-                        <h2 class="text-lg font-bold">
-                            {{ t('Payments') }} {{ t('history') }}
-                        </h2>
+                        <div class="flex items-center gap-3 py-1">
+                            <div
+                                class="flex size-9 shrink-0 items-center
+                                       justify-center rounded-lg
+                                       border bg-muted/40"
+                            >
+                                <History class="size-4 text-muted-foreground" />
+                            </div>
+
+                            <div class="space-y-0.5">
+                                <h2 class="text-base font-semibold tracking-tight">
+                                    {{ t('Payments') }} {{ t('history') }}
+                                </h2>
+
+                                <p class="text-xs text-muted-foreground">
+                                    {{ totalPayments }}
+                                    {{ t('transactions') }}
+                                </p>
+                            </div>
+                        </div>
                     </template>
 
-
                     <template #content-table>
-                        <VTable :pinning="{ left: [], right: ['actions'] }" :columns-defs="columns" v-model="data">
-                        </VTable>
+                        <VTable
+                            v-model="data"
+                            :columns-defs="columns"
+                            :pinning="{ left: [], right: ['actions'] }"
+                        />
+
                         <VPagination
                             :from="payments?.from"
                             :to="payments?.to"
@@ -210,11 +476,10 @@ const columns = [
                             :last_page_url="payments?.last_page_url"
                             :next_page_url="payments?.next_page_url"
                             :prev_page_url="payments?.prev_page_url"
-                            class="p-4"
+                            class="border-t p-4"
                         />
                     </template>
                 </ContainerBox>
-
             </div>
         </div>
     </AppLayout>

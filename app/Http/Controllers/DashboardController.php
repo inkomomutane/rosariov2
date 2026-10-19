@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Data\FullPatientCaseDto;
-use App\Data\ProfileDto;
 use App\Data\UserFrontData;
 use App\Enum\CaseType;
 use App\Enum\Urgency;
@@ -46,13 +45,6 @@ class DashboardController
                     static fn () => FullPatientCaseDto::collect(
                         DoctorCaseServices::getAvailableCases($search)
                             ->paginate(15, pageName: 'cases_page')
-                    )
-                ),
-
-                'review_cases' => Inertia::scroll(
-                    static fn () => FullPatientCaseDto::collect(
-                        DoctorCaseServices::getAssignedCases($person, $search)
-                            ->paginate(15, pageName: 'review_cases_page')
                     )
                 ),
             ]);

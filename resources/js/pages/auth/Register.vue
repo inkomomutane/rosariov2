@@ -26,18 +26,18 @@ const submit = () => {
 </script>
 
 <template>
-    <AuthBase :title="$t('Create an account')" :description="$t('Enter your details below to create your account')">
-        <Head :title="$t('Register')" />
+    <AuthBase :title="t('Create an account')" :description="t('Enter your details below to create your account')">
+        <Head :title="t('Register')" />
 
         <form @submit.prevent="submit" class="flex flex-col gap-6">
             <div class="grid gap-6">
                 <div class="grid gap-2">
-                    <Label for="name">{{ $t('Name') }}</Label>
-                    <Input id="name" type="text" required autofocus tabindex="1" autocomplete="name" v-model="form.name" :placeholder="$t('Full name')" />
+                    <Label for="name">{{ t('Name') }}</Label>
+                    <Input id="name" type="text" required autofocus tabindex="1" autocomplete="name" v-model="form.name" :placeholder="t('Full name')" />
                     <InputError :message="form.errors.name" />
                 </div>
                 <div>
-                    <Label for="name">{{ $t('Registar como') }}</Label>
+                    <Label for="name">{{ t('Registar como') }}</Label>
                     <VSyncSelect
                         :options="[
                             { key: 'patient', value: t('Paciente') },
@@ -55,13 +55,13 @@ const submit = () => {
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="email">{{ $t('Email address') }}</Label>
-                    <Input id="email" type="email" required tabindex="2" autocomplete="email" v-model="form.email" :placeholder="$t('email@example.com')" />
+                    <Label for="email">{{ 	t('Email address') }}</Label>
+                    <Input id="email" type="email" required tabindex="2" autocomplete="email" v-model="form.email" :placeholder="	('email@example.com')" />
                     <InputError :message="form.errors.email" />
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password">{{ $t('Password') }}</Label>
+                    <Label for="password">{{ t('Password') }}</Label>
                     <Input
                         id="password"
                         type="password"
@@ -69,13 +69,13 @@ const submit = () => {
                         tabindex="3"
                         autocomplete="new-password"
                         v-model="form.password"
-                        :placeholder="$t('Password')"
+                        :placeholder="t('Password')"
                     />
                     <InputError :message="form.errors.password" />
                 </div>
 
                 <div class="grid gap-2">
-                    <Label for="password_confirmation">{{ $t('Confirm password') }}</Label>
+                    <Label for="password_confirmation">{{ t('Confirm password') }}</Label>
                     <Input
                         id="password_confirmation"
                         type="password"
@@ -83,20 +83,20 @@ const submit = () => {
                         tabindex="4"
                         autocomplete="new-password"
                         v-model="form.password_confirmation"
-                        :placeholder="$t('Confirm password')"
+                        :placeholder="t('Confirm password')"
                     />
                     <InputError :message="form.errors.password_confirmation" />
                 </div>
 
                 <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
-                    {{ $t('Create account') }}
+                    {{ t('Create account') }}
                 </Button>
             </div>
 
             <div class="text-center text-sm text-muted-foreground">
-                {{ $t('Already have an account?') }}
-                <TextLink :href="route('login')" class="underline underline-offset-4" tabindex="6">{{ $t('Log in') }}</TextLink>
+                {{ t('Already have an account?') }}
+                <TextLink :href="route('login')" class="underline underline-offset-4" tabindex="6">{{ t('Log in') }}</TextLink>
             </div>
         </form>
     </AuthBase>

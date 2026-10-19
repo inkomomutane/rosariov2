@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { computed, type PropType } from 'vue';
+import { computed, type PropType, ref } from 'vue';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -17,7 +17,8 @@ import {
 } from 'lucide-vue-next';
 
 import type { FullPatientCaseDto } from '@/types/generated';
-import { t } from '@/lib/utils';
+import { crudManager, t } from '@/lib/utils';
+import AppyToReviewCase from '@/pages/AppyToReviewCase.vue';
 
 const props = defineProps({
     medicalCase: {
@@ -41,16 +42,12 @@ const formattedDate = computed(() => {
     );
 });
 
-const canPay = computed(() =>
-    [
-        'submitted',
-        'second_review_submitted',
-    ].includes(props.medicalCase.status ?? ''),
-);
+const reviewManager = ref(crudManager());
+const openApplyReviewModal = () => {
+    reviewManager.value.open(props.medicalCase);
+};
 
-const canRequestSecondReview = computed(
-    () => props.medicalCase.status === 'reviewed',
-);
+
 </script>
 
 <template>
@@ -137,6 +134,7 @@ const canRequestSecondReview = computed(
                     <!-- Submitted or second review submitted -->
                     <Button
                         variant="outline"
+                        @click="openApplyReviewModal"
                     >
                         <span class="text-sm font-medium">
                             {{ t('Apply to review') }}
@@ -147,4 +145,7 @@ const canRequestSecondReview = computed(
             </div>
         </CardContent>
     </Card>
+
+
+    <AppyToReviewCase v-if="reviewManager.isModalOpen" :case="reviewManager.model" :close="reviewManager.close"  :open-modal="reviewManager.isModalOpen"/>
 </template>

@@ -18,7 +18,7 @@ import {
 import type { FullPatientCaseDto } from '@/types/generated';
 import { crudManager, t } from '@/lib/utils';
 import { useForm } from '@inertiajs/vue3';
-import PayCaseInvoice from '@/pages/settings/PayCaseInvoice.vue';
+import PayCaseInvoice from '@/pages/PayCaseInvoice.vue';
 
 const props = defineProps({
     medicalCase: {
@@ -74,6 +74,8 @@ const caseTypeLabels: Record<string, string> = {
     radiography: t('Radiography'),
     consultation: t('Consultation'),
     laboratory: t('Laboratory'),
+    echography: t('Echography'),
+    ecography: t('Echography'),
 };
 
 const formatLabel = (value?: string | null): string => {
@@ -120,9 +122,7 @@ const canPay = computed(() =>
 const canRequestSecondReview = computed(
     () => props.medicalCase.status === 'reviewed',
 );
-const payMyCase = (caseId: number) => {
-     useForm().post(route('pay-my-case-invoice', { case: caseId }));
-};
+
 
 const payManager = ref(crudManager());
 const openPayModal = (medicalCase: FullPatientCaseDto) => {

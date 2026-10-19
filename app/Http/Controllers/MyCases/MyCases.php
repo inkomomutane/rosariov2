@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\MyCases;
 
 use App\Data\FullPatientCaseDto;
+use App\Data\UserFrontData;
 use App\Enum\CaseType;
 use App\Enum\Urgency;
+use App\Services\DoctorCaseServices;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,14 +14,25 @@ class MyCases
 {
     public function __invoke(Request $request)
     {
+
+        $user = $request->user();
+        $person = $user->person;
+
         return Inertia::render('My/Cases/Index',[
-            'cases' =>  $this->handle($request->input('term',''),$request->input('per_page',12)),
-            'person' => auth()->user()->person()->firstOrCreate([
-                'user_id' => auth()->id()
-            ], [
-                'name' => auth()->user()->name,
-                'last_name' => ''
-            ])->only(['name', 'last_name', 'id', 'gender', 'marital_status']),
+            'cases' =>  Inertia::scroll(
+                static fn () => FullPatientCaseDto::collect(
+                    DoctorCaseServices::getAssignedCases($person, $request->input('search', ''))
+                        ->paginate(15, pageName: 'review_cases_page')
+                )
+            ),
+            'user' => UserFrontData::from($user),
+            'person' => $person->only([
+                'name',
+                'last_name',
+                'id',
+                'gender',
+                'marital_status',
+            ]),
             'case_types' => CaseType::toValues(),
             'urgencies' => Urgency::toValues(),
         ]);

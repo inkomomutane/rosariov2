@@ -6,6 +6,7 @@ use App\Enum\CaseType;
 use App\Enum\MaritalStatus;
 use App\Enum\Sex;
 use App\Models\CasePricing;
+use App\Models\Person;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Random\RandomException;
@@ -20,7 +21,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::updateOrCreate([
+        $user1 = User::updateOrCreate([
             'email' => 'administrator@iris.org'
         ], [
             'name' => 'Administrador',
@@ -29,7 +30,21 @@ class DatabaseSeeder extends Seeder
             'password' => \Hash::make('password'),
         ]);
 
-        User::updateOrCreate([
+        Person::updateOrCreate([
+            'user_id' => $user1->id
+        ],[
+            'name' => 'Administrador',
+            'last_name' => 'Iris',
+            'gender' => Sex::MALE,
+            'marital_status' => MaritalStatus::SINGLE,
+            'birth_date' => now()->subYears(30),
+            'is_doctor' => true,
+            'is_patient' => false,
+        ]);
+
+
+
+       $user2 =  User::updateOrCreate([
             'email' => 'mutamira@telemed.com'
         ], [
             'name' => 'Mutamira',
@@ -37,6 +52,43 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'password' => \Hash::make('MeuPassword@123'),
         ]);
+
+
+        Person::updateOrCreate([
+            'user_id' => $user2->id
+        ],[
+            'name' => 'Mutamira',
+            'last_name' => 'Telemed',
+            'gender' => Sex::MALE,
+            'marital_status' => MaritalStatus::MARRIED,
+            'birth_date' => now()->subYears(28),
+            'is_doctor' => true,
+            'is_patient' => false,
+        ]);
+
+        $patientUser = User::updateOrCreate([
+            'email' => 'paciente@telemed.com'
+        ], [
+            'name' => 'Paciente',
+            'email' =>  'paciente@telemed.com',
+            'email_verified_at' => now(),
+            'password' => \Hash::make('MeuPassword@123'),
+        ]);
+
+        Person::updateOrCreate([
+            'user_id' => $patientUser->id
+        ],[
+            'name' => 'Paciente',
+            'last_name' => 'Telemed',
+            'gender' => Sex::FEMALE,
+            'marital_status' => MaritalStatus::SINGLE,
+            'birth_date' => now()->subYears(25),
+            'is_doctor' => false,
+            'is_patient' => true,
+        ]);
+
+
+
 
 
         $this->seedCasePricing();

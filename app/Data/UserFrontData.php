@@ -13,14 +13,15 @@ class UserFrontData extends Data
         public string  $name,
         #[Required, Email]
         public string  $email,
+        public ?string $specialization,
         public string  $type = 'paciente',
         public ?bool   $verified = false,
         public ?string $address = '',
         public ?string $phone = '',
-        public ?string $specialization,
         public ?int    $cases = 0,
         public ?string $balance = '0.00',
         public ?string $year_of_experience = '',
+        public ?bool   $is_admin = false,
 
     )
     {
@@ -33,19 +34,20 @@ class UserFrontData extends Data
             return null;
         }
 
-
         $user->loadMissing(['person', 'payments']);
 
         return new self(
             name: $user->person->name . ' ' . $user->person->last_name,
             email: $user->email,
+            specialization: $user->person?->specialization,
             type: $user->person?->is_doctor ? 'doctor' : 'paciente',
             verified: (bool)$user->person?->verified,
             address: self::address($user),
             phone: self::phone($user),
-            specialization: $user->person?->specialization,
             cases: $user->person?->cases->count() ?? 0,
-            balance: $user->payments?->sum('debit') - $user->payments?->sum('credit')
+            balance: $user->payments?->sum('debit') - $user->payments?->sum('credit'),
+            year_of_experience: $user->person?->years_of_experience,
+            is_admin: true,
         );
     }
 

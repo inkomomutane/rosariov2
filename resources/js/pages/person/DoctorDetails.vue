@@ -52,7 +52,7 @@ const doctorTabs = [
 
 const patientTabs = [
     {
-        title: t('Doctor Details'),
+        title: t('Personal Details'),
         url: route('dashboard.user-person-edit'),
         isActive: route().current('dashboard.user-person-edit'),
     }

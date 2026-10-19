@@ -1,29 +1,18 @@
 <script setup lang="ts">
-import AppLayout from '@/layouts/AppLayout.vue';
-import { ref, watch, h } from 'vue';
-import { Head, router } from '@inertiajs/vue3';
-import { FullPatientCaseDto, FormUIMap } from '@/types/generated';
-import { Pencil, LucideTrash, SearchIcon } from 'lucide-vue-next';
-import { crudManager, t } from '@/lib/utils';
-import VTableHeader from '@/components/VTable/VTableHeader.vue';
-import ContainerBox from '@/components/Box/ContainerBox.vue';
-import TableListSelect from '@/components/VTable/TableListSelect.vue';
-import { createColumnHelper } from '@tanstack/vue-table';
-import VTableRowAction from '@/components/VTable/VTableRowAction.vue';
-import VTable from '@/components/VTable/VTable.vue';
-import VPagination from '@/components/VPagination.vue';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { crudManager, t } from '@/lib/utils';
+import AsideDashboard from '@/pages/AsideDashboard.vue';
+import CaseShortComponent from '@/pages/MedicalAssignedCase.vue';
+import { FullPatientCaseDto } from '@/types/generated';
+import { Head, InfiniteScroll, router } from '@inertiajs/vue3';
+import { Plus, SearchIcon } from 'lucide-vue-next';
+import { ref, watch } from 'vue';
 import Create from '@/pages/My/Cases/Create.vue';
-import Edit from '@/pages/My/Cases/Edit.vue';
 
 const props = defineProps({
-    cases: {
-        type: Object,
-        required: true,
-    },
-    search: String,
-
+    cases: Object,
+    user: Object,
     case_types: {
         type: Array,
         required: true,
@@ -38,6 +27,13 @@ const props = defineProps({
     },
 });
 
+const breadcrumbs = [
+    {
+        title: t('Dashboard'),
+        href: '/dashboard',
+    },
+];
+
 const searchTerm = ref('');
 watch(searchTerm, (value) => {
     searchTerm.value = value;
@@ -47,280 +43,37 @@ watch(searchTerm, (value) => {
         }),
         {
             only: ['cases', 'search'],
+            reset: ['cases'],
             replace: true,
             preserveState: true,
         },
     );
 });
 
-const data = ref([]);
-
-watch(
-    () => props.cases?.data,
-    (value) => {
-        data.value = value ?? [];
-    },
-    { immediate: true, deep: true },
-);
-
-const editCrudManager = ref(crudManager<FullPatientCaseDto>());
-const deleteCrudManager = ref(crudManager<FullPatientCaseDto>());
 const createCrudManager = ref(crudManager<FullPatientCaseDto>());
-
-const buildActions = (row: FullPatientCaseDto) => {
-    return [
-        {
-            label: t('Edit'),
-            icon: Pencil,
-            onClick: () => editCrudManager.value.open(row),
-        },
-        {
-            label: t('Delete'),
-            icon: LucideTrash,
-            onClick: () => deleteCrudManager.value.open(row),
-        },
-    ];
-};
-
-const columnHelper = createColumnHelper<FullPatientCaseDto>();
-
-const columns = [
-    columnHelper.accessor('case_code', {
-        enableSorting: true,
-        enablePinning: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Code'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.case_code),
-        meta: { label: t('Code') },
-    }),
-    columnHelper.accessor('patient_name', {
-        enableSorting: true,
-        enablePinning: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Patient Name'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) =>
-            h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.patient_name + ' ' + row.original.patient_last_name),
-        meta: { label: t('Patient Name') },
-    }),
-    columnHelper.accessor('case_type', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Case Type'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.case_type),
-        meta: { label: t('Case Type') },
-    }),
-    columnHelper.accessor('priority', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Priority'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.priority),
-        meta: { label: t('Priority') },
-    }),
-    columnHelper.accessor('status', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Status'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.status),
-        meta: { label: t('Status') },
-    }),
-    columnHelper.accessor('case_date', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Case Date'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.case_date),
-        meta: { label: t('Case Date') },
-    }),
-    columnHelper.accessor('requester_doctor_name', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Requester Doctor'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.requester_doctor_name),
-        meta: { label: t('Requester Doctor') },
-    }),
-    columnHelper.accessor('assigned_doctor_name', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Assigned Doctor'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.assigned_doctor_name),
-        meta: { label: t('Assigned Doctor') },
-    }),
-    columnHelper.accessor('last_reviewer_doctor_name', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Last Reviewer Doctor'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.last_reviewer_doctor_name),
-        meta: { label: t('Last Reviewer Doctor') },
-    }),
-    columnHelper.accessor('title', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Title'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.title),
-        meta: { label: t('Title') },
-    }),
-    columnHelper.accessor('description', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Description'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.description),
-        meta: { label: t('Description') },
-    }),
-    columnHelper.accessor('patient_verified', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Patient Verified'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) =>
-            h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.patient_verified ? t('Verified') : t('Unverified')),
-        meta: { label: t('Patient Verified') },
-    }),
-    columnHelper.accessor('first_review_date', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('First Review Date'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.first_review_date),
-        meta: { label: t('First Review Date') },
-    }),
-    columnHelper.accessor('last_review_date', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Last Review Date'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.last_review_date),
-        meta: { label: t('Last Review Date') },
-    }),
-    columnHelper.accessor('first_review', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('First Review'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.first_review),
-        meta: { label: t('First Review') },
-    }),
-    columnHelper.accessor('final_review', {
-        enableSorting: true,
-        header: ({ column }) =>
-            h(VTableHeader, {
-                column,
-                title: t('Final Review'),
-                class: 'rounded-none border-none text-muted-foreground hover:bg-transparent',
-            }),
-        cell: ({ row }) => h('span', { class: 'line-clamp-1 rounded-none border-none ps-4' }, row.original.final_review),
-        meta: { label: t('Final Review') },
-    }),
-    columnHelper.display({
-        id: 'actions',
-        enablePinning: true,
-        header: () => h('span', {}, t('Actions')),
-        cell: ({ row }) => {
-            return h(VTableRowAction, {
-                row: row,
-                actions: buildActions(row.original),
-            });
-        },
-        meta: { label: t('Action') },
-    }),
-];
 </script>
+
 <template>
-    <Head :title="$t('Patient cases')" />
-    <AppLayout>
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <ContainerBox>
-                <template v-slot:header-left>
+    <Head :title="$t('Dashboard')" />
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="min-h-screen px-2 pt-4 md:px-4">
+            <div class="mx-auto grid max-w-6xl grid-cols-1 gap-5 md:grid-cols-12">
+                <AsideDashboard :user="user" />
+                <main class="col-span-1 space-y-4 md:col-span-6">
                     <div class="relative mt-3 flex w-full flex-col gap-3 lg:mt-0 lg:flex-row lg:justify-end lg:space-x-2">
-                        <div class="w-full">
-                            <Input :placeholder="t('Search') + '...'" v-model="searchTerm" class="w-full pl-7" />
-                            <span class="absolute inset-y-0 start-0 flex items-center justify-center px-2">
+                        <Input :placeholder="t('Search') + '...'" v-model="searchTerm" class="w-full pl-7" />
+                        <span class="absolute inset-y-0 start-0 flex items-center justify-center px-2">
                                 <SearchIcon :size="15" class="text-muted-foreground" />
                             </span>
-                        </div>
                     </div>
-                </template>
-                <template v-slot:header-right>
-                    <Button variant="outline" @click="createCrudManager.open(null)" size="sm">
-                        {{ t('Create Case') }}
-                    </Button>
-                </template>
-                <template #content-table>
-                    <VTable :pinning="{ left: [], right: ['actions'] }" :columns-defs="columns" v-model="data">
-                        <template #fields_visibility="{ table }">
-                            <div class="mb-2 flex items-center justify-between px-2">
-                                <TableListSelect :table="table" :document_type="'patients'" />
-                            </div>
-                        </template>
-                    </VTable>
-                    <VPagination
-                        :from="cases?.from"
-                        :to="cases.to"
-                        :per_page="cases.per_page"
-                        :total="cases.total"
-                        :links="cases?.links"
-                        :first_page_url="cases?.first_page_url"
-                        :last_page_url="cases?.last_page_url"
-                        :next_page_url="cases.next_page_url"
-                        :prev_page_url="cases?.prev_page_url"
-                        class="p-4"
-                    />
-                </template>
-            </ContainerBox>
+                    <InfiniteScroll data="cases">
+                        <div v-for="medicalCase in cases.data" :key="medicalCase.id">
+                            <CaseShortComponent :medical-case="medicalCase" />
+                        </div>
+                    </InfiniteScroll>
+                </main>
+                <aside class="hidden space-y-3 md:col-span-3 md:block"></aside>
+            </div>
         </div>
     </AppLayout>
 
@@ -331,15 +84,5 @@ const columns = [
         :open-modal="createCrudManager.isModalOpen"
         :close="createCrudManager.close"
         :person="person"
-    />
-
-     <Edit
-        v-if="editCrudManager.isModalOpen"
-        :urgencies="urgencies"
-        :case_types="case_types"
-        :open-modal="editCrudManager.isModalOpen"
-        :close="editCrudManager.close"
-        :person="person"
-        :case="editCrudManager.model"
     />
 </template>

@@ -18,13 +18,6 @@ export const AppRoutes: NavItem[]  = [
         adminOnly: false,
     },
     {
-        title: t('Patient Cases'),
-        href: route('all-patient-cases'),
-        icon: FileText,
-        routeName: 'all-patient-cases',
-        adminOnly: false,
-    },
-    {
         title: t('My Cases'),
         href: route('my-cases'),
         icon: ListCheck,
@@ -43,6 +36,6 @@ export const AppRoutes: NavItem[]  = [
         href: route('case-pricing'),
         icon: DollarSign,
         routeName: 'case-pricing',
-        adminOnly: false,
+        adminOnly: true,
     }
 ];
