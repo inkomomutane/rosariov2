@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -83,9 +84,9 @@ class PatientCase extends Model implements HasMedia,WithFilesInterface
     }
 
 
-    public function invoices(): HasMany
+    public function invoice(): HasOne
     {
-        return $this->hasMany(Invoice::class, 'patient_case_id');
+        return $this->hasOne(Invoice::class, 'patient_case_id', 'id');
     }
 
 

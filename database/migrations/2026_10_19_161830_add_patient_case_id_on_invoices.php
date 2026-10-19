@@ -13,7 +13,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('invoices', static function (Blueprint $table) {
-            $table->foreignUlid(PatientCase::class)->nullable()->after('id')->constrained('patient_cases')->cascadeOnDelete();
+
+            $table->string('patient_case_id')->nullable()->after('id');
+            $table->foreign('patient_case_id')->references('id')->on('patient_cases')->nullOnDelete();
         });
     }
 
@@ -23,8 +25,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('invoices', static function (Blueprint $table) {
-            $table->dropForeign([PatientCase::class]);
-            $table->dropColumn(PatientCase::class);
+            $table->dropForeign(['patient_case_id']);
+            $table->dropColumn('patient_case_id');
         });
     }
 };

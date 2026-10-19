@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { computed, type PropType } from 'vue';
+import { computed, type PropType, ref } from 'vue';
 
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,7 +16,9 @@ import {
 } from 'lucide-vue-next';
 
 import type { FullPatientCaseDto } from '@/types/generated';
-import { t } from '@/lib/utils';
+import { crudManager, t } from '@/lib/utils';
+import { useForm } from '@inertiajs/vue3';
+import PayCaseInvoice from '@/pages/settings/PayCaseInvoice.vue';
 
 const props = defineProps({
     medicalCase: {
@@ -118,6 +120,15 @@ const canPay = computed(() =>
 const canRequestSecondReview = computed(
     () => props.medicalCase.status === 'reviewed',
 );
+const payMyCase = (caseId: number) => {
+     useForm().post(route('pay-my-case-invoice', { case: caseId }));
+};
+
+const payManager = ref(crudManager());
+const openPayModal = (medicalCase: FullPatientCaseDto) => {
+    payManager.value.open(medicalCase);
+};
+
 </script>
 
 <template>
@@ -201,6 +212,7 @@ const canRequestSecondReview = computed(
                     <!-- Submitted or second review submitted -->
                     <Button
                         v-if="canPay"
+                        @click="openPayModal(medicalCase)"
                         variant="outline"
                     >
                         <span class="text-sm font-medium">
@@ -223,4 +235,8 @@ const canRequestSecondReview = computed(
             </div>
         </CardContent>
     </Card>
+
+
+
+    <PayCaseInvoice :v-if="payManager.isModalOpen"  :open-modal="payManager.isModalOpen" :close="payManager.close" :case="payManager.model" />
 </template>

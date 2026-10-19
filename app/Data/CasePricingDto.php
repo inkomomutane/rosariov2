@@ -15,4 +15,10 @@ class CasePricingDto extends Data
     )
     {
     }
+
+     public static function fromModel(\App\Models\CasePricing $casePricing): self {
+         return new self(
+             id: $casePricing->id,case_type: $casePricing->case_type->value, price: $casePricing->price, review_phase: $casePricing->review_phase
+         );
+     }
 }

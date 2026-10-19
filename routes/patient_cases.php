@@ -6,7 +6,9 @@ use App\Http\Controllers\Cases\StoreCasePricing;
 use App\Http\Controllers\Cases\UpdateCasePricing;
 use App\Http\Controllers\MyCases\CreateCase;
 use App\Http\Controllers\MyCases\EditCase;
+use App\Http\Controllers\MyCases\GetMyCaseInvoiceData;
 use App\Http\Controllers\MyCases\MyCases;
+use App\Http\Controllers\MyCases\PayMyCaseInvoice;
 use App\Http\Controllers\MyCases\StoreMyCase;
 use App\Http\Controllers\MyCases\UpdateMyCase;
 use App\Http\Controllers\PatientCase\ListAllPatientCases;
@@ -49,8 +51,9 @@ Route::delete('/dashboard/case-pricing/{pricing}/delete', DeleteCasePricing::cla
 
 // Case Actions
 Route::get('/dashboard/cases/{case}', ViewPatientCase::class)->name('case-view')->middleware(['auth', 'verified']);
+Route::get('/dashboard/get/case/{case}/invoice', GetMyCaseInvoiceData::class)->name('get-case-invoice-data')->middleware(['auth', 'verified']);
 
-
+Route::post('/dashboard/pay/case/{case}/invoice', PayMyCaseInvoice::class)->name('pay-my-case-invoice')->middleware(['auth', 'verified']);
 
 Route::post('/dashboard/cases/{case}/accept', AcceptCaseController::class)->name('case-accept')->middleware(['auth', 'verified']);
 Route::post('/dashboard/cases/{case}/reject', RejectCaseController::class)->name('case-reject')->middleware(['auth', 'verified']);
