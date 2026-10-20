@@ -89,5 +89,10 @@ class PatientCase extends Model implements HasMedia,WithFilesInterface
         return $this->hasOne(Invoice::class, 'patient_case_id', 'id');
     }
 
+    public function secondReviewInvoice(): HasOne
+    {
+        return $this->hasOne(Invoice::class, 'patient_case_id', 'id')->where('second_review');
+    }
+
 
 }

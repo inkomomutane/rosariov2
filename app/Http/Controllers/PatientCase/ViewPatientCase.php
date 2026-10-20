@@ -9,7 +9,7 @@ class ViewPatientCase
 {
     public function __invoke(PatientCase $case)
     {
-        $case->load(['patient', 'requesterDoctor', 'assignedDoctor', 'lastReviewerDoctor', 'reviews.doctor', 'reviews.media']);
+        $case->load(['patient', 'requesterDoctor', 'assignedDoctor', 'lastReviewerDoctor', 'reviews.doctor', 'reviews.media','media']);
         return Inertia::render('PatientFullCase', [
             'case' => $case
         ]);

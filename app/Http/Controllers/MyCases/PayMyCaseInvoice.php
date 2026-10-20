@@ -116,7 +116,7 @@ class PayMyCaseInvoice
             ]);
 
             $invoice->patientCase->update([
-                'status' => PatientCaseStatus::PAID,
+                'status' => $invoice->second_review ? PatientCaseStatus::SECOND_REVIEW_PAID: PatientCaseStatus::PAID,
             ]);
 
             Payment::create([

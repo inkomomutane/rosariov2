@@ -35,6 +35,7 @@ class DoctorCaseServices
                     PatientCaseStatus::REVIEWED,
                     PatientCaseStatus::IN_SECONDARY_REVIEW,
                     PatientCaseStatus::SECONDARY_REVIEWED,
+                    PatientCaseStatus::SECOND_REVIEW_SUBMITTED
                 ]),
             $term
         );

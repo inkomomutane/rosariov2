@@ -34,6 +34,7 @@ class Invoice extends Model implements  WithFilesInterface,HasMedia
         'reference',
         'notes',
         'patient_case_id',
+        'second_review'
     ];
 
     protected function casts(): array

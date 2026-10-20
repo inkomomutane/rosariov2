@@ -12,6 +12,7 @@ use App\Http\Controllers\MyCases\EditCase;
 use App\Http\Controllers\MyCases\GetMyCaseInvoiceData;
 use App\Http\Controllers\MyCases\MyCases;
 use App\Http\Controllers\MyCases\PayMyCaseInvoice;
+use App\Http\Controllers\MyCases\SecondReviewSubmitController;
 use App\Http\Controllers\MyCases\StoreMyCase;
 use App\Http\Controllers\MyCases\UpdateCaseReview;
 use App\Http\Controllers\MyCases\UpdateMyCase;
@@ -54,11 +55,17 @@ Route::delete('/dashboard/case-pricing/{pricing}/delete', DeleteCasePricing::cla
 // Case Actions
 Route::get('/dashboard/cases/{case}', ViewPatientCase::class)->name('case-view')->middleware(['auth', 'verified']);
 Route::get('/dashboard/get/case/{case}/invoice', GetMyCaseInvoiceData::class)->name('get-case-invoice-data')->middleware(['auth', 'verified']);
+
 Route::post('/dashboard/pay/case/{case}/invoice', PayMyCaseInvoice::class)->name('pay-my-case-invoice')->middleware(['auth', 'verified']);
+
 Route::post('/dashboard/cases/{case}/apply', ApplyToPatientCase::class)->name('case-apply')->middleware(['auth', 'verified']);
 Route::get('/dashboard/cases/{case}/review', CaseReviewController::class)->name('case-review')->middleware(['auth', 'verified']);
 Route::post('/dashboard/cases/review/{review}/update', UpdateCaseReview::class)->name('case-review-update')->middleware(['auth', 'verified']);
 Route::post('/dashboard/cases/review/{review}/complete', CompleteCaseReview::class)->name('case-review-complete')->middleware(['auth', 'verified']);
+
+Route::post('/dashboard/second-review/submit/{case}', SecondReviewSubmitController::class)->name('second-review-submit')->middleware(['auth', 'verified']);
+
+
 
 
 // Payments

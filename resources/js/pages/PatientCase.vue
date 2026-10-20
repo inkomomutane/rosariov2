@@ -19,6 +19,7 @@ import type { FullPatientCaseDto } from '@/types/generated';
 import { crudManager, t } from '@/lib/utils';
 import { useForm } from '@inertiajs/vue3';
 import PayCaseInvoice from '@/pages/PayCaseInvoice.vue';
+import PaySecondReviewCaseInvoice from '@/pages/PaySecondReviewCaseInvoice.vue';
 
 const props = defineProps({
     medicalCase: {
@@ -129,6 +130,12 @@ const openPayModal = (medicalCase: FullPatientCaseDto) => {
     payManager.value.open(medicalCase);
 };
 
+const secondReviewManager = ref(crudManager())
+
+const askForSecondReview = () => {
+    secondReviewManager.value.open(props.medicalCase);
+};
+
 </script>
 
 <template>
@@ -222,6 +229,7 @@ const openPayModal = (medicalCase: FullPatientCaseDto) => {
                     <Button
                         v-if="canRequestSecondReview"
                         variant="outline"
+                        @click="askForSecondReview"
                     >
                         <span class="text-sm font-medium">
                             {{ t('Ask Second Review') }}
@@ -236,4 +244,5 @@ const openPayModal = (medicalCase: FullPatientCaseDto) => {
 
 
     <PayCaseInvoice :v-if="payManager.isModalOpen"  :open-modal="payManager.isModalOpen" :close="payManager.close" :case="payManager.model" />
+    <PaySecondReviewCaseInvoice :v-if="secondReviewManager.isModalOpen"  :open-modal="secondReviewManager.isModalOpen" :close="secondReviewManager.close" :case="secondReviewManager.model" />
 </template>

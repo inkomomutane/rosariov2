@@ -28,6 +28,7 @@ class CaseReview extends Model implements  WithFilesInterface,HasMedia
         'review_date',
         'review_conclusion',
         'status',
+        'second_review'
     ];
 
     protected function casts(): array

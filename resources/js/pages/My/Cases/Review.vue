@@ -285,8 +285,7 @@ function completeReview() {
 
 const attachments = computed(() => {
     const all = [
-        ...(props.case.attachments ?? []),
-        ...(props.case.uploaded_attachments ?? []),
+        ...(props.case.media ?? []),
     ];
 
     const seen = new Set<string>();
