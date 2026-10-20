@@ -15,7 +15,7 @@ const props = defineProps({
     },
     accept: {
         type: String,
-        default: 'image/*',
+        default: '.dcm,.dicom,application/dicom,.jpg,.jpeg,.png,.tif,.tiff,.bmp,.pdf,.doc,.docx,.zip',
     },
     liteUpload: {
         type: Boolean,

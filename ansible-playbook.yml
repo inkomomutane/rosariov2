@@ -1,0 +1,41 @@
+---
+
+-   name: Update the server
+    hosts: localhost
+    connection: local
+    become: true
+
+    vars_files:
+      - vars/main.yml
+
+    tasks:
+
+      - name: Install packages and kepp them updated
+        ansible.builtin.package:
+          name: "{{ packages }}"
+          state: latest
+
+      - name: Set the system timezone
+        ansible.builtin.file:
+          src: "/usr/share/zoneinfo/{{ timezone }}"
+          dest: "/etc/localtime"
+          state: link
+          force: yes
+
+      - name: Create the admin user
+        ansible.builtin.user:
+            name: "{{ admin_user }}"
+            groups: "{{ admin_group }}"
+            append: true
+            shell: /bin/bash
+            create_home: true
+
+      - name: Allow the admin group access to sudo without password
+        ansible.builtin.copy:
+            dest: "/etc/sudoers.d/99-ansible"
+            content: "%{{ admin_group }} ALL=(ALL) NOPASSWD: ALL \n"
+            owner: root
+            group: root
+            mode: '0440'
+            validate: 'visudo -cf %s'
+
